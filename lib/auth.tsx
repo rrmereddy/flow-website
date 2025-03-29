@@ -9,7 +9,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  updateProfile,
+  sendEmailVerification,
 } from "firebase/auth"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { auth, db } from "./firebase"
@@ -21,14 +21,15 @@ export type UserRole = "admin" | "driver" | "user"
 export type User = {
   uid: string
   email: string | null
-  name: string | null
+  firstName: string | null
+  lastName: string | null
   role: UserRole
 }
 
 type AuthContextType = {
   user: User | null
   loading: boolean
-  signup: (email: string, password: string, name: string, role: UserRole) => Promise<void>
+  signup: (email: string, password: string, firstName: string, lastName: string, role: UserRole) => Promise<void>
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
 }
@@ -42,8 +43,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // Get user data from Firestore
+      if (firebaseUser && firebaseUser.emailVerified) {
+        // Only proceed if email is verified
         try {
           const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
 
@@ -53,7 +54,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setUser({
               uid: firebaseUser.uid,
               email: firebaseUser.email,
-              name: firebaseUser.displayName,
+              firstName: userData.firstName || null,
+              lastName: userData.lastName || null,
               role: userRole,
             })
 
@@ -65,15 +67,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             } else {
               router.push("/user/dashboard")
             }
-          } else{
+          } else {
             toast.error("User not found")
           }
         } catch (error) {
           console.error("Error fetching user data:", error)
           setUser(null)
         }
-      } else {
-        setUser(null)
       }
 
       setLoading(false)
@@ -82,33 +82,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe()
   }, [router])
 
-  const signup = async (email: string, password: string, name: string, role: UserRole) => {
+  const signup = async (email: string, password: string, firstName: string, lastName: string, role: UserRole) => {
     try {
       setLoading(true)
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const firebaseUser = userCredential.user
 
-      // Update profile with display name
-      await updateProfile(firebaseUser, {
-        displayName: name,
-      })
 
-      // Create user document in Firestore
-      await setDoc(doc(db, "users", firebaseUser.uid), {
-        email,
-        name,
-        role,
-        createdAt: new Date().toISOString(),
-      })
-
-      // Redirect based on role
-      if (role === "admin") {
-        router.push("/admin/dashboard")
+      if (role === "user" || role === "admin") {
+        await setDoc(doc(db, "users", firebaseUser.uid), {
+          email,
+          firstName,
+          lastName,
+          role,
+          createdAt: new Date().toISOString(),
+        })
       } else if (role === "driver") {
-        router.push("/driver/dashboard")
+        await setDoc(doc(db, "drivers", firebaseUser.uid), {
+          email,
+          firstName,
+          lastName,
+          role,
+          createdAt: new Date().toISOString(),
+        })
       } else {
-        router.push("/user/dashboard")
+        toast.error("Invalid role selected")
+        throw new Error("Invalid role selected")
       }
+
+      await sendEmailVerification(firebaseUser, {
+        url: `${window.location.origin}/auth/verify-email`,
+      })
+      toast.success("Verification email sent. Please check your inbox.")
     } catch (error) {
       console.error("Error signing up:", error)
       throw error
@@ -120,10 +125,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       setLoading(true)
-      await signInWithEmailAndPassword(auth, email, password)
-      // Redirection will happen in the useEffect when user state changes
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      
+      if (!userCredential.user.emailVerified) {
+        // Sign out immediately if email is not verified
+        await signOut(auth)
+        // Send verification email again
+        await sendEmailVerification(userCredential.user)
+        throw new Error("Email not verified")
+      }
+      // If email is verified, redirection will happen in useEffect
     } catch (error) {
-      console.error("Error logging in:", error)
+      //toast.error("Invalid email or password, please try again.")
       throw error
     } finally {
       setLoading(false)

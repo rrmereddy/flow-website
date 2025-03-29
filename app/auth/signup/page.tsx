@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { useAuth, type UserRole } from "@/lib/auth"
 
 export default function SignupPage() {
@@ -21,7 +21,6 @@ export default function SignupPage() {
   const [role, setRole] = useState<UserRole>("user")
   const [isLoading, setIsLoading] = useState(false)
   const searchParams = useSearchParams()
-  const { toast } = useToast()
   const { signup } = useAuth()
 
   useEffect(() => {
@@ -36,30 +35,22 @@ export default function SignupPage() {
     e.preventDefault()
 
     if (password !== confirmPassword) {
-      toast({
-        title: "Passwords don't match",
+      toast.error("Passwords don't match", {
         description: "Please make sure your passwords match.",
-        variant: "destructive",
       })
       return
     }
 
     setIsLoading(true)
-
+    const firstName = name.split(" ")[0]
+    const lastName = name.split(" ").slice(1).join(" ")
     try {
-      await signup(email, password, name, role)
-
-      toast({
-        title: "Account created",
-        description: "Welcome to RideShare!",
-      })
+      await signup(email, password, firstName, lastName, role)
 
       // Redirection will happen in the signup function
     } catch (error) {
-      toast({
-        title: "Registration failed",
+      toast.error("Registration failed", {
         description: "There was an error creating your account. Please try again.",
-        variant: "destructive",
       })
       console.error("Signup error:", error)
     } finally {

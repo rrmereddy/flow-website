@@ -8,14 +8,13 @@ import { Car } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { useAuth } from "@/lib/auth"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const { toast } = useToast()
   const { login } = useAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,16 +23,17 @@ export default function LoginPage() {
 
     try {
       await login(email, password)
-      toast({
-        title: "Login successful",
-        description: "Welcome back to RideShare!",
+      toast.success("Login successful", {
+        description: "Welcome back to Flow!",
       })
     } catch (error) {
-      toast({
-        title: "Login failed",
-        description: "Please check your credentials and try again.",
-        variant: "destructive",
-      })
+      if (error instanceof Error && error.message === "Email not verified") { 
+        toast.error("Please verify your email before logging in. A new verification email has been sent.")
+      } else {
+        toast.error("Login failed", {
+          description: "Please check your credentials and try again.",
+        })
+      }
       console.error("Login error:", error)
     } finally {
       setIsLoading(false)
