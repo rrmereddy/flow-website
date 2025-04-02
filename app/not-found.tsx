@@ -1,8 +1,13 @@
+"use client"
+
 import Link from "next/link"
 import { Car } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/lib/auth"
 
 export default function NotFound() {
+  const { user } = useAuth()
+
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
       <div className="space-y-6">
@@ -15,8 +20,8 @@ export default function NotFound() {
           <h2 className="text-2xl font-semibold">Page Not Found</h2>
           <p className="text-muted-foreground">The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
         </div>
-        <Link href="/">
-          <Button>Return to Home</Button>
+        <Link href={user?.role === "admin" ? "/admin/dashboard" : user?.role === "driver" ? "/driver/dashboard" : "/user/dashboard"}>
+          <Button>Return to Dashboard</Button>
         </Link>
       </div>
     </div>

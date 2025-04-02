@@ -7,7 +7,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { BarChart3, Car, CreditCard, LogOut, Menu, MessageSquare, Settings, Users, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from "@/components/ui/sheet"
 import { useAuth } from "@/lib/auth"
 
 interface AdminLayoutProps {
@@ -75,17 +75,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-72 sm:max-w-xs">
+            <SheetHeader>
+              <Link href="/" className="flex items-center gap-2 font-semibold md:flex">
+                <Car className="h-6 w-6" />
+                <SheetTitle>RideShare Admin</SheetTitle>
+              </Link>
+            </SheetHeader>
             <div className="flex h-full flex-col">
-              <div className="flex items-center border-b px-2 py-4">
-                <Link href="/" className="flex items-center gap-2 font-semibold">
-                  <Car className="h-6 w-6" />
-                  <span>RideShare Admin</span>
-                </Link>
-                <Button variant="ghost" size="icon" className="ml-auto" onClick={() => setOpen(false)}>
-                  <X className="h-5 w-5" />
-                  <span className="sr-only">Close</span>
-                </Button>
-              </div>
               <nav className="flex-1 overflow-auto py-2">
                 <div className="grid gap-1 px-2">
                   {routes.map((route) => (
@@ -107,11 +103,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <div className="flex items-center gap-2">
                   <div className="rounded-full bg-muted p-1">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      {user?.name?.charAt(0) || "A"}
+                      {user?.firstName?.charAt(0) || "A"}
                     </div>
                   </div>
                   <div className="grid gap-0.5 text-sm">
-                    <div className="font-medium">{user?.name || "Admin User"}</div>
+                    <div className="font-medium">{user?.firstName + " " + user?.lastName || "Admin User"}</div>
                     <div className="text-xs text-muted-foreground">{user?.email || "admin@example.com"}</div>
                   </div>
                   <Button variant="ghost" size="icon" className="ml-auto" onClick={() => logout()}>
@@ -137,11 +133,11 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           <div className="hidden items-center gap-2 md:flex">
             <div className="rounded-full bg-muted p-1">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                {user?.name?.charAt(0) || "A"}
+                {user?.firstName?.charAt(0) || "A"}
               </div>
             </div>
             <div className="grid gap-0.5 text-sm">
-              <div className="font-medium">{user?.name || "Admin User"}</div>
+              <div className="font-medium">{user?.firstName || "Admin User"}</div>
               <div className="text-xs text-muted-foreground">{user?.email || "admin@example.com"}</div>
             </div>
           </div>

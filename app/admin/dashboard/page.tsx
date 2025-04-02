@@ -5,6 +5,7 @@ import { BarChart, Calendar, Car, CreditCard, DollarSign, MapPin, TrendingUp, Us
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useUser } from "@/lib/auth"
+import { Button } from "@/components/ui/button"
 
 export default function AdminDashboard() {
   const { user } = useUser()
@@ -92,7 +93,7 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 relative">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
         <div className="flex items-center gap-2">
@@ -105,6 +106,11 @@ export default function AdminDashboard() {
               day: "numeric",
             })}
           </span>
+        </div>
+        <div className="absolute right-0 top-12">
+          <Button variant="default">
+            Refresh Data
+          </Button>
         </div>
       </div>
 

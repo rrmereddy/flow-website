@@ -44,7 +44,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser && firebaseUser.emailVerified) {
-        // Only proceed if email is verified
         try {
           const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
 
@@ -58,15 +57,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               lastName: userData.lastName || null,
               role: userRole,
             })
-
-            // Redirect based on role
-            if (userRole === "admin") {
-              router.push("/admin/dashboard")
-            } else if (userRole === "driver") {
-              router.push("/driver/dashboard")
-            } else {
-              router.push("/user/dashboard")
-            }
           } else {
             toast.error("User not found")
           }
@@ -74,13 +64,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           console.error("Error fetching user data:", error)
           setUser(null)
         }
+      } else {
+        setUser(null)
       }
-
       setLoading(false)
     })
 
     return () => unsubscribe()
-  }, [router])
+  }, [])  // Removed router dependency
 
   const signup = async (email: string, password: string, firstName: string, lastName: string, role: UserRole) => {
     try {
@@ -128,15 +119,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       
       if (!userCredential.user.emailVerified) {
-        // Sign out immediately if email is not verified
         await signOut(auth)
-        // Send verification email again
         await sendEmailVerification(userCredential.user)
         throw new Error("Email not verified")
       }
-      // If email is verified, redirection will happen in useEffect
+
+      // Get user data and handle routing here
+      const userDoc = await getDoc(doc(db, "users", userCredential.user.uid))
+      if (userDoc.exists()) {
+        const userData = userDoc.data()
+        const userRole = userData.role as UserRole
+
+        // Route based on role
+        if (userRole === "admin") {
+          router.push("/admin/dashboard")
+        } else if (userRole === "driver") {
+          router.push("/driver/dashboard")
+        } else {
+          router.push("/user/dashboard")
+        }
+      } else {
+        toast.error("User not found")
+        throw new Error("User data not found")
+      }
     } catch (error) {
-      //toast.error("Invalid email or password, please try again.")
       throw error
     } finally {
       setLoading(false)
@@ -147,7 +153,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true)
       await signOut(auth)
-      router.push("/auth/login")
+      router.push("/")
     } catch (error) {
       console.error("Error logging out:", error)
       throw error
