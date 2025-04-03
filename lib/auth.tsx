@@ -10,6 +10,7 @@ import {
   signOut,
   onAuthStateChanged,
   sendEmailVerification,
+  sendPasswordResetEmail,
 } from "firebase/auth"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { auth, db } from "./firebase"
@@ -32,6 +33,7 @@ type AuthContextType = {
   signup: (email: string, password: string, firstName: string, lastName: string, role: UserRole) => Promise<void>
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
+  forgotPassword: (email: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
@@ -162,8 +164,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const forgotPassword = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email)
+      toast.success("Password reset email sent. Please check your inbox.")
+    } catch (error) {
+      console.error("Error sending password reset email:", error)
+      throw error
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, loading, signup, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, signup, login, logout, forgotPassword }}>
       {children}
     </AuthContext.Provider>
   )

@@ -67,7 +67,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link href="#" className="text-sm text-primary hover:underline">
+                <Link href="/auth/login/forgot" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -88,10 +88,6 @@ export default function LoginPage() {
             <Link href="/auth/signup" className="text-primary hover:underline">
               Sign up
             </Link>
-          </div>
-          <div className="mt-4 text-center text-xs text-muted-foreground">
-            <p>Note: You need to create an account first.</p>
-            <p>Use the signup page to create an account with your desired role.</p>
           </div>
         </div>
       </div>

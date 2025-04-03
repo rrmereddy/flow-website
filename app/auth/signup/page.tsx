@@ -9,12 +9,13 @@ import { Car } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "sonner"
 import { useAuth, type UserRole } from "@/lib/auth"
 
 export default function SignupPage() {
-  const [name, setName] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -42,8 +43,6 @@ export default function SignupPage() {
     }
 
     setIsLoading(true)
-    const firstName = name.split(" ")[0]
-    const lastName = name.split(" ").slice(1).join(" ")
     try {
       await signup(email, password, firstName, lastName, role)
 
@@ -63,24 +62,62 @@ export default function SignupPage() {
       <div className="flex flex-1 flex-col justify-center items-center p-4 md:p-8">
         <Link href="/" className="flex items-center gap-2 text-lg font-semibold mb-8">
           <Car className="h-6 w-6" />
-          <span>RideShare</span>
+          <span>Flow</span>
         </Link>
         <div className="mx-auto w-full max-w-md space-y-6 rounded-lg border bg-card p-6 shadow-lg">
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold">Sign Up</h1>
             <p className="text-muted-foreground">Create an account to get started</p>
           </div>
+          
+          <Tabs 
+            defaultValue="user" 
+            value={role} 
+            onValueChange={(value) => setRole(value as UserRole)}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="user">Rider</TabsTrigger>
+              <TabsTrigger value="driver">Driver</TabsTrigger>
+            </TabsList>
+            <TabsContent value="user">
+              <p className="text-sm text-muted-foreground mb-4">
+                Sign up as a rider to book rides and travel
+              </p>
+            </TabsContent>
+            <TabsContent value="driver">
+              <p className="text-sm text-muted-foreground mb-4">
+                <span className="block mt-1 font-medium text-amber-600">
+                  Note: You&apos;ll need to complete additional verification steps after registration
+                </span>
+              </p>
+            </TabsContent>
+          </Tabs>
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  placeholder="John"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  placeholder="Doe"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -113,33 +150,6 @@ export default function SignupPage() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <Label>Account Type</Label>
-              <RadioGroup
-                value={role}
-                onValueChange={(value) => setRole(value as UserRole)}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="user" id="user" />
-                  <Label htmlFor="user" className="font-normal">
-                    Rider - Book rides and travel
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="driver" id="driver" />
-                  <Label htmlFor="driver" className="font-normal">
-                    Driver - Offer rides and earn money
-                  </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="admin" id="admin" />
-                  <Label htmlFor="admin" className="font-normal">
-                    Admin - Manage the platform (for demo purposes)
-                  </Label>
-                </div>
-              </RadioGroup>
-            </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
               {isLoading ? "Creating account..." : "Create Account"}
             </Button>
@@ -155,4 +165,3 @@ export default function SignupPage() {
     </div>
   )
 }
-

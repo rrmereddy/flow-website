@@ -1,29 +1,37 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Car, Clock, MapPin, Shield, Star } from "lucide-react"
+import { ArrowRight, Car, Clock, MapPin, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="border-b">
-        <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+      <header className="border-b sticky top-0 z-50 bg-background">
+        <div className="flex h-16 items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
             <Car className="h-6 w-6" />
-            <span>RideShare</span>
+            <span>Flow</span>
           </Link>
           <nav className="hidden md:flex gap-6">
+            <Link href="/#mission" className="text-sm font-medium hover:underline underline-offset-4">
+              Our Mission
+            </Link>
             <Link href="/#features" className="text-sm font-medium hover:underline underline-offset-4">
               Features
             </Link>
-            <Link href="/#how-it-works" className="text-sm font-medium hover:underline underline-offset-4">
-              How It Works
+            <Link href="/#about" className="text-sm font-medium hover:underline underline-offset-4">
+              About Us
             </Link>
-            <Link href="/#testimonials" className="text-sm font-medium hover:underline underline-offset-4">
-              Testimonials
+            <Link href="/#faq" className="text-sm font-medium hover:underline underline-offset-4">
+              FAQ
             </Link>
-            <Link href="/#pricing" className="text-sm font-medium hover:underline underline-offset-4">
-              Pricing
+            <Link href="/#contact" className="text-sm font-medium hover:underline underline-offset-4">
+              Contact
             </Link>
           </nav>
           <div className="flex gap-4">
@@ -39,16 +47,18 @@ export default function LandingPage() {
         </div>
       </header>
       <main className="flex-1">
+        {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
-          <div className="container px-4 md:px-6">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2">
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Your Ride, Your Way
+                    Travel your way. Every Day.
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Fast, reliable rides at your fingertips. Join thousands of riders and drivers on our platform.
+                    Fast, reliable rides at your fingertips. Join our community of riders and drivers in Bryan/College
+                    Station.
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
@@ -79,340 +89,280 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-          <div className="container px-4 md:px-6">
+        {/* Mission Section */}
+        <section id="mission" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className="container px-4 md:px-6 mx-auto">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Our Mission</h2>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-3xl mt-8 text-center">
+              <p className="text-lg text-muted-foreground mb-6">
+                At Flow, our mission is to make transportation seamless, safe, and accessible while empowering drivers
+                with greater flexibility and earning potential. We strive to create a driver-first platform where our
+                partners have the tools, support, and fair compensation they deserve.
+              </p>
+              <p className="text-lg text-muted-foreground">
+                By prioritizing safety, community, and innovation, we connect riders with reliable drivers, ensuring
+                affordability and trust in every ride. Flow isn&apos;t just about getting from point A to B - It&apos;s about
+                building a transportation network that values and uplifts the people who make it possible.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section id="features" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
                 <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
                   Features
                 </div>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">
-                  Everything You Need in a Rideshare App
-                </h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our platform offers a seamless experience for both riders and drivers.
-                </p>
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">What Makes Flow Different</h2>
               </div>
             </div>
             <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3">
               <div className="grid gap-2 text-center">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <Clock className="h-8 w-8 text-primary" />
+                  <Shield className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Fast Pickups</h3>
-                <p className="text-muted-foreground">Get picked up in minutes with our large network of drivers.</p>
+                <h3 className="text-xl font-bold">Transparent Pricing Model</h3>
+                <p className="text-muted-foreground">
+                  Via our transparent pricing model, drivers can better understand their earning potential.
+                </p>
               </div>
               <div className="grid gap-2 text-center">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <Shield className="h-8 w-8 text-primary" />
+                  <Clock className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Safe Rides</h3>
+                <h3 className="text-xl font-bold">Subscription Driven</h3>
                 <p className="text-muted-foreground">
-                  All drivers are verified and rides are monitored for your safety.
+                  With a subscription model, drivers have fixed costs, increasing earnings potential.
                 </p>
               </div>
               <div className="grid gap-2 text-center">
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                   <MapPin className="h-8 w-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold">Easy Navigation</h3>
-                <p className="text-muted-foreground">Real-time tracking and optimized routes for efficient travel.</p>
+                <h3 className="text-xl font-bold">Marketplace</h3>
+                <p className="text-muted-foreground">
+                  Through our marketplace, we return pricing power to the people, letting demand rule.
+                </p>
               </div>
+            </div>
+            <div className="flex justify-center mt-8">
+              <Link href="#contact">
+                <Button size="lg">Get in Touch</Button>
+              </Link>
             </div>
           </div>
         </section>
 
-        <section id="how-it-works" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+        {/* About Us Section */}
+        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
-                  How It Works
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Simple, Fast, Reliable</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Getting a ride or becoming a driver is easy with our platform.
-                </p>
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">About Us</h2>
+                <p className="text-xl font-semibold text-primary">Travel your way. Every Day.</p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl gap-6 py-12 lg:grid-cols-3">
-              <div className="flex flex-col items-center space-y-2 border rounded-lg p-6 shadow-sm">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                  1
-                </div>
-                <h3 className="text-xl font-bold">Sign Up</h3>
-                <p className="text-center text-muted-foreground">
-                  Create an account as a rider or driver in just a few minutes.
-                </p>
-              </div>
-              <div className="flex flex-col items-center space-y-2 border rounded-lg p-6 shadow-sm">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                  2
-                </div>
-                <h3 className="text-xl font-bold">Book or Drive</h3>
-                <p className="text-center text-muted-foreground">
-                  Request a ride as a user or accept ride requests as a driver.
-                </p>
-              </div>
-              <div className="flex flex-col items-center space-y-2 border rounded-lg p-6 shadow-sm">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                  3
-                </div>
-                <h3 className="text-xl font-bold">Enjoy the Ride</h3>
-                <p className="text-center text-muted-foreground">
-                  Track your ride in real-time and pay securely through the app.
-                </p>
-              </div>
+            <div className="mx-auto grid max-w-3xl mt-8 text-center">
+              <p className="text-lg text-muted-foreground mb-6">
+                At Flow, we believe in seamless, efficient, and reliable transportation. Founded with the vision of
+                redefining ridesharing in Bryan/College Station, we&apos;re committed to providing a safe and affordable way
+                to get around town.
+              </p>
+              <p className="text-lg text-muted-foreground mb-6">
+                Our platform connects riders with independent drivers who meet strict safety and reliability standards.
+                Whether you&apos;re heading to class, work, or a night out, Flow ensures you get there with ease.
+              </p>
+              <p className="text-lg text-muted-foreground">
+                Driven by innovation and a passion for community, we&apos;re here to make every ride simple, stress-free, and
+                accessible. Welcome to a new era of transportation- welcome to Flow.
+              </p>
             </div>
-          </div>
-        </section>
 
-        <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
-                  Testimonials
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">What Our Users Say</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Hear from our community of riders and drivers.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-5xl gap-6 py-12 lg:grid-cols-2">
-              <div className="flex flex-col justify-between rounded-lg border bg-background p-6 shadow-sm">
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 fill-primary text-primary" />
-                    ))}
+            {/* Founders Section */}
+            <div className="mt-16">
+              <h3 className="text-2xl font-bold text-center mb-8">Our Founders</h3>
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+                {/* Founder 1 */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-32 h-32 rounded-full bg-muted-foreground/20 mb-4 overflow-hidden">
+                    <Image
+                      src="/placeholder.svg?height=128&width=128"
+                      width={128}
+                      height={128}
+                      alt="Founder 1"
+                      className="object-cover"
+                    />
                   </div>
-                  <p className="text-muted-foreground">
-                    &quot;I&apos;ve been using RideShare for my daily commute for the past 6 months. The service is reliable, and
-                    the drivers are always professional. Highly recommend!&quot;
+                  <h4 className="text-xl font-bold">Founder Name</h4>
+                  <p className="text-sm text-muted-foreground mt-1">Co-Founder & CEO</p>
+                  <p className="mt-2 text-sm">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.
                   </p>
                 </div>
-                <div className="mt-6 flex items-center space-x-2">
-                  <div className="h-10 w-10 rounded-full bg-muted"></div>
-                  <div>
-                    <p className="text-sm font-medium">Sarah Johnson</p>
-                    <p className="text-xs text-muted-foreground">Rider</p>
+
+                {/* Founder 2 */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-32 h-32 rounded-full bg-muted-foreground/20 mb-4 overflow-hidden">
+                    <Image
+                      src="/placeholder.svg?height=128&width=128"
+                      width={128}
+                      height={128}
+                      alt="Founder 2"
+                      className="object-cover"
+                    />
                   </div>
-                </div>
-              </div>
-              <div className="flex flex-col justify-between rounded-lg border bg-background p-6 shadow-sm">
-                <div className="space-y-2">
-                  <div className="flex items-center">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="h-5 w-5 fill-primary text-primary" />
-                    ))}
-                  </div>
-                  <p className="text-muted-foreground">
-                    &quot;As a driver, I appreciate how easy the platform is to use. The app helps me find riders quickly,
-                    and the payment system is seamless. It&apos;s been a great source of income!&quot;
+                  <h4 className="text-xl font-bold">Founder Name</h4>
+                  <p className="text-sm text-muted-foreground mt-1">Co-Founder & CTO</p>
+                  <p className="mt-2 text-sm">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.
                   </p>
                 </div>
-                <div className="mt-6 flex items-center space-x-2">
-                  <div className="h-10 w-10 rounded-full bg-muted"></div>
-                  <div>
-                    <p className="text-sm font-medium">Michael Chen</p>
-                    <p className="text-xs text-muted-foreground">Driver</p>
+
+                {/* Founder 3 */}
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-32 h-32 rounded-full bg-muted-foreground/20 mb-4 overflow-hidden">
+                    <Image
+                      src="/placeholder.svg?height=128&width=128"
+                      width={128}
+                      height={128}
+                      alt="Founder 3"
+                      className="object-cover"
+                    />
                   </div>
+                  <h4 className="text-xl font-bold">Founder Name</h4>
+                  <p className="text-sm text-muted-foreground mt-1">Co-Founder & COO</p>
+                  <p className="mt-2 text-sm">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.
+                  </p>
                 </div>
               </div>
+            </div>
+
+            <div className="flex justify-center mt-12">
+              <Link href="#contact">
+                <Button size="lg" className="text-lg px-8">
+                  Are you ready to go with Flow?
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
 
-        <section id="pricing" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6">
+        {/* FAQ Section */}
+        <section id="faq" className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
-                  Pricing
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Transparent Pricing</h2>
-                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  No hidden fees, just fair prices for everyone.
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Frequently Asked Questions</h2>
+                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Find answers to common questions about Flow
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl gap-6 py-12 lg:grid-cols-2">
-              <div className="flex flex-col rounded-lg border bg-background p-6 shadow-sm">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold">For Riders</h3>
-                  <p className="text-muted-foreground">Pay only for the distance you travel. No subscription fees.</p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold">$1.50</span>
-                    <span className="text-muted-foreground">base fare + $0.75/mile</span>
-                  </div>
-                </div>
-                <ul className="mt-6 space-y-2">
-                  <li className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5 text-primary"
-                    >
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>No cancellation fee if canceled within 2 minutes</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5 text-primary"
-                    >
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>Multiple vehicle options</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5 text-primary"
-                    >
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>24/7 customer support</span>
-                  </li>
-                </ul>
-                <div className="mt-6">
-                  <Link href="/auth/signup?role=user">
-                    <Button className="w-full">Sign Up as Rider</Button>
-                  </Link>
-                </div>
-              </div>
-              <div className="flex flex-col rounded-lg border bg-background p-6 shadow-sm">
-                <div className="space-y-2">
-                  <h3 className="text-2xl font-bold">For Drivers</h3>
-                  <p className="text-muted-foreground">Keep more of what you earn with our low commission rate.</p>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold">15%</span>
-                    <span className="text-muted-foreground">platform fee</span>
-                  </div>
-                </div>
-                <ul className="mt-6 space-y-2">
-                  <li className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5 text-primary"
-                    >
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>Weekly payouts</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5 text-primary"
-                    >
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>Flexible hours</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-5 w-5 text-primary"
-                    >
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                    <span>Driver support and resources</span>
-                  </li>
-                </ul>
-                <div className="mt-6">
-                  <Link href="/auth/signup?role=driver">
-                    <Button className="w-full">Sign Up as Driver</Button>
-                  </Link>
-                </div>
-              </div>
+            <div className="mx-auto grid max-w-3xl mt-8">
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="item-1">
+                  <AccordionTrigger>How do I book a ride?</AccordionTrigger>
+                  <AccordionContent>
+                    To book a ride with Flow, simply download our app, create an account, enter your pickup location and
+                    destination, and select a driver. You can track your ride in real-time and pay securely through the
+                    app.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger>What happens if I lose an item in a Flow vehicle?</AccordionTrigger>
+                  <AccordionContent>
+                    If you&apos;ve lost an item in a Flow vehicle, contact us immediately through the app or website. We&apos;ll
+                    connect you with your driver to arrange for the return of your belongings. Our drivers are
+                    instructed to check their vehicles after each ride and report any found items.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-3">
+                  <AccordionTrigger>How do I become a driver?</AccordionTrigger>
+                  <AccordionContent>
+                    To become a Flow driver, sign up through our app or website, complete the background check, provide
+                    required documentation (driver&apos;s license, insurance, vehicle registration), and complete our brief
+                    orientation. Once approved, you can start accepting rides and earning money on your own schedule.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-4">
+                  <AccordionTrigger>What is the earnings split between a driver and Flow?</AccordionTrigger>
+                  <AccordionContent>
+                    At Flow, we believe in fair compensation. Drivers keep a significantly higher percentage of the fare
+                    compared to traditional rideshare services. We operate on a subscription model where drivers pay a
+                    fixed weekly or monthly fee rather than a percentage of each ride, allowing them to maximize their
+                    earnings potential.
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </div>
           </div>
         </section>
 
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-primary text-primary-foreground">
-          <div className="container px-4 md:px-6">
+        {/* Contact Form Section */}
+        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
+          <div className="container px-4 md:px-6 mx-auto">
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Ready to Get Started?</h2>
-                <p className="max-w-[600px] text-primary-foreground/80 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Join thousands of satisfied users on our platform today.
+                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Contact Us</h2>
+                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Have questions or want to learn more? Get in touch with our team.
                 </p>
               </div>
-              <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                <Link href="/auth/signup?role=user">
-                  <Button size="lg" variant="secondary" className="w-full min-[400px]:w-auto">
-                    Sign Up as Rider
-                  </Button>
-                </Link>
-                <Link href="/auth/signup?role=driver">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full min-[400px]:w-auto border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary"
-                  >
-                    Sign Up as Driver
-                  </Button>
-                </Link>
-              </div>
+            </div>
+            <div className="mx-auto max-w-lg mt-8 w-full">
+              <form className="space-y-4 w-full" action="https://formspree.io/f/Team@RoamwithFlow.com" method="POST">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" name="name" placeholder="Your name" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input id="email" name="email" type="email" placeholder="Your email" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input id="phone" name="phone" type="tel" placeholder="Your phone number" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="reason">Reason for Contact</Label>
+                  <Select name="reason" required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a reason" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="invest">To Invest</SelectItem>
+                      <SelectItem value="ride">To Ride</SelectItem>
+                      <SelectItem value="drive">To Drive</SelectItem>
+                      <SelectItem value="interview">To Interview</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="message">Comments</Label>
+                  <Textarea id="message" name="message" placeholder="Your message" className="min-h-[120px]" />
+                </div>
+                <Button type="submit" className="w-full">
+                  Submit
+                </Button>
+              </form>
             </div>
           </div>
         </section>
       </main>
       <footer className="border-t py-6 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4 md:px-6">
+        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4 md:px-6 mx-auto">
           <div className="flex items-center gap-2 text-lg font-semibold">
             <Car className="h-6 w-6" />
-            <span>RideShare</span>
+            <span>Flow</span>
           </div>
           <div className="flex gap-4">
             <Link href="#" className="text-sm hover:underline underline-offset-4">
@@ -421,16 +371,13 @@ export default function LandingPage() {
             <Link href="#" className="text-sm hover:underline underline-offset-4">
               Privacy Policy
             </Link>
-            <Link href="#" className="text-sm hover:underline underline-offset-4">
+            <Link href="#contact" className="text-sm hover:underline underline-offset-4">
               Contact Us
             </Link>
           </div>
-          <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} RideShare. All rights reserved.
-          </p>
+          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Flow. All rights reserved.</p>
         </div>
       </footer>
     </div>
   )
 }
-
