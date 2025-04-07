@@ -9,10 +9,8 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
-import { useUser } from "@/lib/auth"
 
 export default function UserRides() {
-  const { user } = useUser()
   const { toast } = useToast()
   const [pickup, setPickup] = useState("")
   const [destination, setDestination] = useState("")

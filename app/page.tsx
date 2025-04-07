@@ -1,383 +1,727 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Car, Clock, MapPin, Shield } from "lucide-react"
+import { ArrowRight, Clock, MapPin, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { motion, useScroll, useTransform, useSpring } from "framer-motion"
+import { useRef, useState, useEffect } from "react"
+import { useScrollAnimation } from "@/hooks/use-scroll-animation" // Import your custom hook
 
 export default function LandingPage() {
+  // For parallax scrolling effect
+  const { scrollY } = useScroll()
+  const y1 = useTransform(scrollY, [0, 1000], [0, 200])
+  const y2 = useTransform(scrollY, [0, 1000], [0, -200])
+
+  // Smooth spring physics for scrolling animations
+  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
+  const springY1 = useSpring(y1, springConfig)
+  const springY2 = useSpring(y2, springConfig)
+
+  // Refs for scroll animations
+  const missionRef = useRef<HTMLElement>(null)
+  const featuresRef = useRef<HTMLElement>(null)
+  const aboutRef = useRef<HTMLElement>(null)
+  const faqRef = useRef<HTMLElement>(null)
+  const contactRef = useRef<HTMLElement>(null)
+
+  // Use custom hook for in-view detection
+  const missionAnim = useScrollAnimation(missionRef, 0.3)
+  const featuresAnim = useScrollAnimation(featuresRef, 0.3)
+  const aboutAnim = useScrollAnimation(aboutRef, 0.3)
+  const faqAnim = useScrollAnimation(faqRef, 0.3)
+  const contactAnim = useScrollAnimation(contactRef, 0.3)
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100, damping: 10 },
+    },
+  }
+
+  const fadeInUpVariants = {
+    hidden: { y: 60, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100, damping: 12, duration: 0.6 },
+    },
+  }
+
+  const staggerContainerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 },
+    },
+  }
+
+  const featureCardVariants = {
+    hidden: { y: 50, opacity: 0, scale: 0.9 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      scale: 1,
+      transition: { type: "spring", stiffness: 100, damping: 12 },
+    },
+    hover: {
+      y: -10,
+      scale: 1.05,
+      // Removed boxShadow to avoid interpolation error
+      transition: { type: "spring", stiffness: 400, damping: 10 },
+    },
+  }
+
+  const founderCardVariants = {
+    hidden: { y: 50, opacity: 0, rotateY: 30 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      rotateY: 0,
+      transition: { type: "spring", stiffness: 100, damping: 12 },
+    },
+    hover: {
+      y: -10,
+      scale: 1.03,
+      transition: { type: "spring", stiffness: 400, damping: 10 },
+    },
+  }
+
+  // Floating animation for hero circle
+  const floatingAnimation = {
+    y: [0, -20, 0],
+    transition: { duration: 6, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", ease: "easeInOut" },
+  }
+
+  // Pulse animation for hero circle
+  const pulseAnimation = {
+    scale: [1, 1.05, 1],
+    opacity: [0.7, 0.9, 0.7],
+    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", ease: "easeInOut" },
+  }
+
+  // Rotating animation for gradient background
+  const rotateAnimation = {
+    rotate: [0, 360],
+    transition: { duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
+  }
+
+  // For scroll progress indicator
+  const [scrollProgress, setScrollProgress] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const totalScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight
+      const currentScroll = window.scrollY
+      setScrollProgress((currentScroll / totalScroll) * 100)
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <header className="border-b sticky top-0 z-50 bg-background">
-        <div className="flex h-16 items-center justify-between px-4 md:px-6">
-          <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
-            <Car className="h-6 w-6" />
-            <span>Flow</span>
-          </Link>
-          <nav className="hidden md:flex gap-6">
-            <Link href="/#mission" className="text-sm font-medium hover:underline underline-offset-4">
-              Our Mission
-            </Link>
-            <Link href="/#features" className="text-sm font-medium hover:underline underline-offset-4">
-              Features
-            </Link>
-            <Link href="/#about" className="text-sm font-medium hover:underline underline-offset-4">
-              About Us
-            </Link>
-            <Link href="/#faq" className="text-sm font-medium hover:underline underline-offset-4">
-              FAQ
-            </Link>
-            <Link href="/#contact" className="text-sm font-medium hover:underline underline-offset-4">
-              Contact
-            </Link>
-          </nav>
-          <div className="flex gap-4">
-            <Link href="/auth/login">
-              <Button variant="outline" size="sm">
-                Log In
-              </Button>
-            </Link>
-            <Link href="/auth/signup">
-              <Button size="sm">Sign Up</Button>
-            </Link>
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 overflow-hidden">
+        {/* Scroll Progress Indicator */}
+        <motion.div
+            className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 z-50"
+            style={{ scaleX: scrollProgress / 100, transformOrigin: "0%" }}
+        />
+
+        <header className="border-b sticky top-0 z-40 bg-white bg-opacity-90 backdrop-blur-sm dark:bg-gray-900 dark:bg-opacity-90 dark:border-gray-800">
+          <div className="flex h-16 items-center justify-around px-4 md:px-6">
+            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+              <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
+                <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
+                  <Image src="/logo2.png" width={30} height={30} alt="Logo Picture" />
+                </motion.div>
+                <motion.span
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  Flow
+                </motion.span>
+              </Link>
+            </motion.div>
+
+            <nav className="hidden md:flex gap-6 underline-offset-4">
+              {["mission", "features", "about", "faq", "contact"].map((item, index) => (
+                  <motion.div key={item} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }}>
+                    <Link href={`/#${item}`} className="text-sm font-medium text-blue-500 hover:underline dark:text-blue-400">
+                      <motion.span whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                        {item.charAt(0).toUpperCase() + item.slice(1)}
+                      </motion.span>
+                    </Link>
+                  </motion.div>
+              ))}
+            </nav>
+
+            <div className="flex gap-4">
+              <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.6, duration: 0.5 }}>
+                <Link href="/auth/login">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button variant="outline" size="sm" className="border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-950">
+                      Log In
+                    </Button>
+                  </motion.div>
+                </Link>
+              </motion.div>
+
+              <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.7, duration: 0.5 }}>
+                <Link href="/auth/signup">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                    >
+                      Sign Up
+                    </Button>
+                  </motion.div>
+                </Link>
+              </motion.div>
+            </div>
           </div>
-        </div>
-      </header>
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2">
-              <div className="flex flex-col justify-center space-y-4">
+        </header>
+
+        <main className="flex-1">
+          {/* Hero Section */}
+          <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 overflow-hidden">
+            <div className="container px-4 md:px-6 mx-auto relative">
+              {/* Animated background elements */}
+              <motion.div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl dark:bg-blue-500/30 z-0" animate={pulseAnimation} />
+              <motion.div
+                  className="absolute top-40 -right-20 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl dark:bg-purple-500/30 z-0"
+                  animate={{ ...pulseAnimation, transition: { ...pulseAnimation.transition, delay: 1 } }}
+              />
+
+              <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 xl:grid-cols-2 relative z-10">
+                <motion.div
+                    className="flex flex-col justify-center space-y-4"
+                    initial={{ opacity: 0, x: -100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
+                >
+                  <div className="space-y-2">
+                    <motion.h1
+                        className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.8 }}
+                    >
+                      Travel your way. Every Day.
+                    </motion.h1>
+                    <motion.p
+                        className="max-w-[600px] text-slate-600 md:text-xl dark:text-slate-300"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
+                    >
+                      Fast, reliable rides at your fingertips. Join our community of riders and drivers in Bryan/College Station.
+                    </motion.p>
+                  </div>
+                  <motion.div
+                      className="flex flex-col relative gap-2 min-[400px]:flex-row"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7, duration: 0.8 }}
+                  >
+                    <Link href="/auth/signup?role=user">
+                      <motion.div whileHover={{ scale: 1.05, x: 5 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                        <Button
+                            size="lg"
+                            className="group w-full min-[400px]:w-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700 transition-all"
+                        >
+                          Book a Ride
+                          <motion.div
+                              animate={{ x: [0, 5, 0] }}
+                              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5, repeatType: "reverse" }}
+                          >
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </motion.div>
+                        </Button>
+                      </motion.div>
+                    </Link>
+                    <Link href="/auth/signup?role=driver">
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                        <Button
+                            size="lg"
+                            variant="outline"
+                            className="w-full min-[400px]:w-auto border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-950"
+                        >
+                          Become a Driver
+                        </Button>
+                      </motion.div>
+                    </Link>
+                  </motion.div>
+                </motion.div>
+
+                <motion.div
+                    className="flex items-center justify-center"
+                    initial={{ opacity: 0, x: 100 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.4 }}
+                >
+                  <div className="relative w-full max-w-[550px] aspect-square">
+                    <motion.div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl dark:from-blue-500/30 dark:to-purple-500/30" animate={rotateAnimation} />
+                    <motion.div className="relative z-10 w-full h-full flex items-center justify-center" animate={floatingAnimation}>
+                      <motion.div
+                          className="w-64 h-64 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center dark:from-blue-500 dark:to-purple-500"
+                          whileHover={{ scale: 1.1, rotate: 5 }}
+                          transition={{ type: "spring", stiffness: 200, damping: 10 }}
+                      >
+                        <motion.div className="flex flex-col items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.5 }}>
+                          {[1, 2, 3].map((_, index) => (
+                              <motion.div
+                                  key={index}
+                                  className="w-32 h-4 bg-white rounded-full dark:bg-gray-200"
+                                  initial={{ scaleX: 0 }}
+                                  animate={{ scaleX: 1 }}
+                                  transition={{ delay: 0.9 + index * 0.2, duration: 0.5 }}
+                              />
+                          ))}
+                        </motion.div>
+                      </motion.div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </section>
+
+          {/* Mission Section */}
+          <motion.section
+              id="mission"
+              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
+              ref={missionRef}
+              initial="hidden"
+              animate={missionAnim.hasAnimated ? "visible" : "hidden"}
+              variants={containerVariants}
+          >
+            <div className="container px-4 md:px-6 mx-auto">
+              <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
                 <div className="space-y-2">
-                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                  <motion.h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400" variants={itemVariants}>
+                    Our Mission
+                  </motion.h2>
+                </div>
+              </motion.div>
+              <motion.div className="mx-auto grid max-w-3xl mt-8 text-center" variants={itemVariants}>
+                <motion.p className="text-lg text-slate-600 mb-6 dark:text-slate-300" variants={itemVariants}>
+                  At Flow, our mission is to make transportation seamless, safe, and accessible while empowering drivers with greater flexibility and earning potential. We strive to create a driver-first platform where our partners have the tools, support, and fair compensation they deserve.
+                </motion.p>
+                <motion.p className="text-lg text-slate-600 dark:text-slate-300" variants={itemVariants}>
+                  By prioritizing safety, community, and innovation, we connect riders with reliable drivers, ensuring affordability and trust in every ride. Flow isn’t just about getting from point A to B – it’s about building a transportation network that values and uplifts the people who make it possible.
+                </motion.p>
+              </motion.div>
+            </div>
+          </motion.section>
+
+          {/* Features Section */}
+          <motion.section
+              id="features"
+              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900 relative overflow-hidden"
+              ref={featuresRef}
+              initial="hidden"
+              animate={featuresAnim.hasAnimated ? "visible" : "hidden"}
+              variants={containerVariants}
+          >
+            {/* Animated background elements */}
+            <motion.div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl dark:bg-blue-500/10 z-0" style={{ y: springY1 }} />
+            <motion.div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl dark:bg-purple-500/10 z-0" style={{ y: springY2 }} />
+
+            <div className="container px-4 md:px-6 mx-auto relative z-10">
+              <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
+                <div className="space-y-2">
+                  <motion.div
+                      className="inline-block rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 px-3 py-1 text-sm text-white dark:from-blue-600 dark:to-purple-600"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      variants={itemVariants}
+                  >
+                    Features
+                  </motion.div>
+                  <motion.h2
+                      className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                      variants={itemVariants}
+                  >
+                    What Makes Flow Different
+                  </motion.h2>
+                </div>
+              </motion.div>
+
+              <motion.div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3" variants={staggerContainerVariants}>
+                {[
+                  {
+                    icon: <Shield className="h-8 w-8 text-blue-500 dark:text-blue-400" />,
+                    title: "Transparent Pricing Model",
+                    description: "Via our transparent pricing model, drivers can better understand their earning potential.",
+                  },
+                  {
+                    icon: <Clock className="h-8 w-8 text-purple-500 dark:text-purple-400" />,
+                    title: "Subscription Driven",
+                    description: "With a subscription model, drivers have fixed costs, increasing earnings potential.",
+                  },
+                  {
+                    icon: <MapPin className="h-8 w-8 text-blue-600 dark:text-blue-400" />,
+                    title: "Marketplace",
+                    description: "Through our marketplace, we return pricing power to the people, letting demand rule.",
+                  },
+                ].map((feature, index) => (
+                    <motion.div key={index} className="grid gap-2 text-center" variants={featureCardVariants} whileHover="hover" custom={index}>
+                      <motion.div
+                          className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 dark:from-blue-500/30 dark:to-purple-500/30"
+                          whileHover={{ scale: 1.1, rotate: 5 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      >
+                        {feature.icon}
+                      </motion.div>
+                      <motion.h3
+                          className={`text-xl font-bold ${
+                              index === 1
+                                  ? "text-purple-600 dark:text-purple-400"
+                                  : index === 2
+                                      ? "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                                      : "text-blue-600 dark:text-blue-400"
+                          }`}
+                      >
+                        {feature.title}
+                      </motion.h3>
+                      <motion.p className="text-slate-600 dark:text-slate-300">{feature.description}</motion.p>
+                    </motion.div>
+                ))}
+              </motion.div>
+
+              <motion.div className="flex justify-center mt-8" variants={fadeInUpVariants}>
+                <Link href="#contact">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                    <Button
+                        size="lg"
+                        className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                    >
+                      Get in Touch
+                    </Button>
+                  </motion.div>
+                </Link>
+              </motion.div>
+            </div>
+          </motion.section>
+
+          {/* About Us Section */}
+          <motion.section
+              id="about"
+              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
+              ref={aboutRef}
+              initial="hidden"
+              animate={aboutAnim.hasAnimated ? "visible" : "hidden"}
+              variants={containerVariants}
+          >
+            <div className="container px-4 md:px-6 mx-auto">
+              <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
+                <div className="space-y-2">
+                  <motion.h2
+                      className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                      variants={itemVariants}
+                  >
+                    About Us
+                  </motion.h2>
+                  <motion.p className="text-xl font-semibold text-blue-600 dark:text-blue-400" variants={itemVariants}>
                     Travel your way. Every Day.
-                  </h1>
-                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
-                    Fast, reliable rides at your fingertips. Join our community of riders and drivers in Bryan/College
-                    Station.
-                  </p>
+                  </motion.p>
                 </div>
-                <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Link href="/auth/signup?role=user">
-                    <Button size="lg" className="w-full min-[400px]:w-auto">
-                      Book a Ride
-                      <ArrowRight className="ml-2 h-4 w-4" />
+              </motion.div>
+
+              <motion.div className="mx-auto grid max-w-3xl mt-8 text-center" variants={itemVariants}>
+                {[
+                  "At Flow, we believe in seamless, efficient, and reliable transportation. Founded with the vision of redefining ridesharing in Bryan/College Station, we're committed to providing a safe and affordable way to get around town.",
+                  "Our platform connects riders with independent drivers who meet strict safety and reliability standards. Whether you're heading to class, work, or a night out, Flow ensures you get there with ease.",
+                  "Driven by innovation and a passion for community, we're here to make every ride simple, stress-free, and accessible. Welcome to a new era of transportation – welcome to Flow.",
+                ].map((paragraph, index) => (
+                    <motion.p key={index} className="text-lg text-slate-600 mb-6 dark:text-slate-300" variants={fadeInUpVariants} custom={index}>
+                      {paragraph}
+                    </motion.p>
+                ))}
+              </motion.div>
+
+              {/* Founders Section */}
+              <motion.div className="mt-16" variants={containerVariants}>
+                <motion.h3
+                    className="text-2xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                    variants={itemVariants}
+                >
+                  Our Founders
+                </motion.h3>
+
+                <motion.div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
+                  {[
+                    {
+                      name: "Founder Name",
+                      title: "Co-Founder & CEO",
+                      textColor: "text-blue-600 dark:text-blue-400",
+                    },
+                    {
+                      name: "Founder Name",
+                      title: "Co-Founder & CTO",
+                      textColor: "text-purple-600 dark:text-purple-400",
+                    },
+                    {
+                      name: "Founder Name",
+                      title: "Co-Founder & COO",
+                      textColor: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400",
+                    },
+                  ].map((founder, index) => (
+                      <motion.div key={index} className="flex flex-col items-center text-center" variants={founderCardVariants} whileHover="hover" custom={index}>
+                        <motion.div
+                            className="w-32 h-32 rounded-full bg-gradient-to-r from-blue-400/30 to-purple-400/30 mb-4 overflow-hidden dark:from-blue-500/40 dark:to-purple-500/40"
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        >
+                          <Image src="/placeholder.svg?height=128&width=128" width={128} height={128} alt={`${founder.name}`} className="object-cover" />
+                        </motion.div>
+                        <motion.h4 className={`text-xl font-bold ${founder.textColor}`}>{founder.name}</motion.h4>
+                        <motion.p className="text-sm text-slate-500 mt-1 dark:text-slate-400">{founder.title}</motion.p>
+                        <motion.p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.
+                        </motion.p>
+                      </motion.div>
+                  ))}
+                </motion.div>
+              </motion.div>
+
+              <motion.div className="flex justify-center mt-12" variants={fadeInUpVariants}>
+                <Link href="#contact">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                    <Button
+                        size="lg"
+                        className="text-lg px-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                    >
+                      Are you ready to go with Flow?
                     </Button>
-                  </Link>
-                  <Link href="/auth/signup?role=driver">
-                    <Button size="lg" variant="outline" className="w-full min-[400px]:w-auto">
-                      Become a Driver
+                  </motion.div>
+                </Link>
+              </motion.div>
+            </div>
+          </motion.section>
+
+          {/* FAQ Section */}
+          <motion.section
+              id="faq"
+              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
+              ref={faqRef}
+              initial="hidden"
+              animate={faqAnim.hasAnimated ? "visible" : "hidden"}
+              variants={containerVariants}
+          >
+            <div className="container px-4 md:px-6 mx-auto">
+              <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
+                <div className="space-y-2">
+                  <motion.h2
+                      className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                      variants={itemVariants}
+                  >
+                    Frequently Asked Questions
+                  </motion.h2>
+                  <motion.p className="text-slate-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-slate-300" variants={itemVariants}>
+                    Find answers to common questions about Flow
+                  </motion.p>
+                </div>
+              </motion.div>
+
+              <motion.div className="mx-auto grid max-w-3xl mt-8" variants={fadeInUpVariants}>
+                <Accordion type="single" collapsible className="w-full">
+                  {[
+                    {
+                      question: "How do I book a ride?",
+                      answer:
+                          "To book a ride with Flow, simply download our app, create an account, enter your pickup location and destination, and select a driver. You can track your ride in real-time and pay securely through the app.",
+                      color: "text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300",
+                      borderColor: "border-blue-200 dark:border-blue-800",
+                    },
+                    {
+                      question: "What happens if I lose an item in a Flow vehicle?",
+                      answer:
+                          "If you've lost an item in a Flow vehicle, contact us immediately through the app or website. We'll connect you with your driver to arrange for the return of your belongings. Our drivers are instructed to check their vehicles after each ride and report any found items.",
+                      color: "text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300",
+                      borderColor: "border-blue-200 dark:border-blue-800",
+                    },
+                    {
+                      question: "How do I become a driver?",
+                      answer:
+                          "To become a Flow driver, sign up through our app or website, complete the background check, provide required documentation (driver's license, insurance, vehicle registration), and complete our brief orientation. Once approved, you can start accepting rides and earning money on your own schedule.",
+                      color: "text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300",
+                      borderColor: "border-blue-200 dark:border-blue-800",
+                    },
+                    {
+                      question: "What is the earnings split between a driver and Flow?",
+                      answer:
+                          "At Flow, we believe in fair compensation. Drivers keep a significantly higher percentage of the fare compared to traditional rideshare services. We operate on a subscription model where drivers pay a fixed weekly or monthly fee rather than a percentage of each ride, allowing them to maximize their earnings potential.",
+                      color: "text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300",
+                      borderColor: "border-blue-200 dark:border-blue-800",
+                    },
+                  ].map((faq, index) => (
+                      <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * index, duration: 0.5 }}>
+                        <AccordionItem value={`item-${index + 1}`} className={faq.borderColor}>
+                          <AccordionTrigger className={faq.color}>{faq.question}</AccordionTrigger>
+                          <AccordionContent className="text-slate-600 dark:text-slate-300">{faq.answer}</AccordionContent>
+                        </AccordionItem>
+                      </motion.div>
+                  ))}
+                </Accordion>
+              </motion.div>
+            </div>
+          </motion.section>
+
+          {/* Contact Form Section */}
+          <motion.section
+              id="contact"
+              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
+              ref={contactRef}
+              initial="hidden"
+              animate={contactAnim.hasAnimated ? "visible" : "hidden"}
+              variants={containerVariants}
+          >
+            <div className="container px-4 md:px-6 mx-auto">
+              <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
+                <div className="space-y-2">
+                  <motion.h2
+                      className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                      variants={itemVariants}
+                  >
+                    Contact Us
+                  </motion.h2>
+                  <motion.p className="text-slate-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-slate-300" variants={itemVariants}>
+                    Have questions or want to learn more? Get in touch with our team.
+                  </motion.p>
+                </div>
+              </motion.div>
+
+              <motion.div className="mx-auto max-w-lg mt-8 w-full" variants={fadeInUpVariants}>
+                <motion.form
+                    className="space-y-4 w-full"
+                    action="https://formspree.io/f/Team@RoamwithFlow.com"
+                    method="POST"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  {[
+                    { id: "name", label: "Name", type: "text", placeholder: "Your name" },
+                    { id: "email", label: "Email", type: "email", placeholder: "Your email" },
+                    { id: "phone", label: "Phone", type: "tel", placeholder: "Your phone number" },
+                  ].map((field, index) => (
+                      <motion.div key={field.id} className="space-y-2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * (index + 1), duration: 0.5 }}>
+                        <Label htmlFor={field.id} className="text-blue-600 dark:text-blue-400">
+                          {field.label}
+                        </Label>
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                          <Input
+                              id={field.id}
+                              name={field.id}
+                              type={field.type}
+                              placeholder={field.placeholder}
+                              required
+                              className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600"
+                          />
+                        </motion.div>
+                      </motion.div>
+                  ))}
+
+                  <motion.div className="space-y-2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
+                    <Label htmlFor="reason" className="text-blue-600 dark:text-blue-400">
+                      Reason for Contact
+                    </Label>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                      <Select name="reason" required>
+                        <SelectTrigger className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600">
+                          <SelectValue placeholder="Select a reason" />
+                        </SelectTrigger>
+                        <SelectContent className="dark:bg-gray-800 dark:border-blue-800 dark:text-white">
+                          <SelectItem value="invest">To Invest</SelectItem>
+                          <SelectItem value="ride">To Ride</SelectItem>
+                          <SelectItem value="drive">To Drive</SelectItem>
+                          <SelectItem value="interview">To Interview</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </motion.div>
+                  </motion.div>
+
+                  <motion.div className="space-y-2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.5 }}>
+                    <Label htmlFor="message" className="text-blue-600 dark:text-blue-400">
+                      Comments
+                    </Label>
+                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                      <Textarea
+                          id="message"
+                          name="message"
+                          placeholder="Your message"
+                          className="min-h-[120px] border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600"
+                      />
+                    </motion.div>
+                  </motion.div>
+
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.5 }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                    <Button
+                        type="submit"
+                        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                    >
+                      Submit
                     </Button>
-                  </Link>
-                </div>
-              </div>
-              <div className="flex items-center justify-center">
-                <Image
-                  src="/placeholder.svg?height=550&width=550"
-                  width={550}
-                  height={550}
-                  alt="Hero Image"
-                  className="rounded-xl object-cover"
-                  priority
-                />
-              </div>
+                  </motion.div>
+                </motion.form>
+              </motion.div>
             </div>
+          </motion.section>
+        </main>
+
+        <motion.footer
+            className="justify-around border-t border-blue-100 py-6 md:py-0 bg-white dark:bg-gray-900 dark:border-gray-800"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4 md:px-6 mx-auto">
+            <motion.div className="flex items-center gap-2 text-lg font-semibold" whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
+                <Image src="/logo2.png" width={30} height={30} alt="Logo Picture" />
+              </motion.div>
+              <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
+              Flow
+            </span>
+            </motion.div>
+
+            <motion.div className="flex gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }}>
+              {["Terms of Service", "Privacy Policy", "Contact Us"].map((item) => (
+                  <motion.div key={item} whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                    <Link href={item === "Contact Us" ? "#contact" : "#"} className="text-sm text-blue-600 hover:text-blue-800 hover:underline underline-offset-4 dark:text-blue-400 dark:hover:text-blue-300">
+                      {item}
+                    </Link>
+                  </motion.div>
+              ))}
+            </motion.div>
+
+            <motion.p className="text-sm text-slate-500 dark:text-slate-400" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.5 }}>
+              &copy; {new Date().getFullYear()} Flow. All rights reserved.
+            </motion.p>
           </div>
-        </section>
-
-        {/* Mission Section */}
-        <section id="mission" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Our Mission</h2>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-3xl mt-8 text-center">
-              <p className="text-lg text-muted-foreground mb-6">
-                At Flow, our mission is to make transportation seamless, safe, and accessible while empowering drivers
-                with greater flexibility and earning potential. We strive to create a driver-first platform where our
-                partners have the tools, support, and fair compensation they deserve.
-              </p>
-              <p className="text-lg text-muted-foreground">
-                By prioritizing safety, community, and innovation, we connect riders with reliable drivers, ensuring
-                affordability and trust in every ride. Flow isn&apos;t just about getting from point A to B - It&apos;s about
-                building a transportation network that values and uplifts the people who make it possible.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section id="features" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-primary px-3 py-1 text-sm text-primary-foreground">
-                  Features
-                </div>
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">What Makes Flow Different</h2>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-5xl items-center gap-6 py-12 lg:grid-cols-3">
-              <div className="grid gap-2 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <Shield className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Transparent Pricing Model</h3>
-                <p className="text-muted-foreground">
-                  Via our transparent pricing model, drivers can better understand their earning potential.
-                </p>
-              </div>
-              <div className="grid gap-2 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <Clock className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Subscription Driven</h3>
-                <p className="text-muted-foreground">
-                  With a subscription model, drivers have fixed costs, increasing earnings potential.
-                </p>
-              </div>
-              <div className="grid gap-2 text-center">
-                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <MapPin className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="text-xl font-bold">Marketplace</h3>
-                <p className="text-muted-foreground">
-                  Through our marketplace, we return pricing power to the people, letting demand rule.
-                </p>
-              </div>
-            </div>
-            <div className="flex justify-center mt-8">
-              <Link href="#contact">
-                <Button size="lg">Get in Touch</Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* About Us Section */}
-        <section id="about" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">About Us</h2>
-                <p className="text-xl font-semibold text-primary">Travel your way. Every Day.</p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-3xl mt-8 text-center">
-              <p className="text-lg text-muted-foreground mb-6">
-                At Flow, we believe in seamless, efficient, and reliable transportation. Founded with the vision of
-                redefining ridesharing in Bryan/College Station, we&apos;re committed to providing a safe and affordable way
-                to get around town.
-              </p>
-              <p className="text-lg text-muted-foreground mb-6">
-                Our platform connects riders with independent drivers who meet strict safety and reliability standards.
-                Whether you&apos;re heading to class, work, or a night out, Flow ensures you get there with ease.
-              </p>
-              <p className="text-lg text-muted-foreground">
-                Driven by innovation and a passion for community, we&apos;re here to make every ride simple, stress-free, and
-                accessible. Welcome to a new era of transportation- welcome to Flow.
-              </p>
-            </div>
-
-            {/* Founders Section */}
-            <div className="mt-16">
-              <h3 className="text-2xl font-bold text-center mb-8">Our Founders</h3>
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-                {/* Founder 1 */}
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-32 h-32 rounded-full bg-muted-foreground/20 mb-4 overflow-hidden">
-                    <Image
-                      src="/placeholder.svg?height=128&width=128"
-                      width={128}
-                      height={128}
-                      alt="Founder 1"
-                      className="object-cover"
-                    />
-                  </div>
-                  <h4 className="text-xl font-bold">Founder Name</h4>
-                  <p className="text-sm text-muted-foreground mt-1">Co-Founder & CEO</p>
-                  <p className="mt-2 text-sm">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.
-                  </p>
-                </div>
-
-                {/* Founder 2 */}
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-32 h-32 rounded-full bg-muted-foreground/20 mb-4 overflow-hidden">
-                    <Image
-                      src="/placeholder.svg?height=128&width=128"
-                      width={128}
-                      height={128}
-                      alt="Founder 2"
-                      className="object-cover"
-                    />
-                  </div>
-                  <h4 className="text-xl font-bold">Founder Name</h4>
-                  <p className="text-sm text-muted-foreground mt-1">Co-Founder & CTO</p>
-                  <p className="mt-2 text-sm">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.
-                  </p>
-                </div>
-
-                {/* Founder 3 */}
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-32 h-32 rounded-full bg-muted-foreground/20 mb-4 overflow-hidden">
-                    <Image
-                      src="/placeholder.svg?height=128&width=128"
-                      width={128}
-                      height={128}
-                      alt="Founder 3"
-                      className="object-cover"
-                    />
-                  </div>
-                  <h4 className="text-xl font-bold">Founder Name</h4>
-                  <p className="text-sm text-muted-foreground mt-1">Co-Founder & COO</p>
-                  <p className="mt-2 text-sm">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-center mt-12">
-              <Link href="#contact">
-                <Button size="lg" className="text-lg px-8">
-                  Are you ready to go with Flow?
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section id="faq" className="w-full py-12 md:py-24 lg:py-32">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Frequently Asked Questions</h2>
-                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Find answers to common questions about Flow
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto grid max-w-3xl mt-8">
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="item-1">
-                  <AccordionTrigger>How do I book a ride?</AccordionTrigger>
-                  <AccordionContent>
-                    To book a ride with Flow, simply download our app, create an account, enter your pickup location and
-                    destination, and select a driver. You can track your ride in real-time and pay securely through the
-                    app.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-2">
-                  <AccordionTrigger>What happens if I lose an item in a Flow vehicle?</AccordionTrigger>
-                  <AccordionContent>
-                    If you&apos;ve lost an item in a Flow vehicle, contact us immediately through the app or website. We&apos;ll
-                    connect you with your driver to arrange for the return of your belongings. Our drivers are
-                    instructed to check their vehicles after each ride and report any found items.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-3">
-                  <AccordionTrigger>How do I become a driver?</AccordionTrigger>
-                  <AccordionContent>
-                    To become a Flow driver, sign up through our app or website, complete the background check, provide
-                    required documentation (driver&apos;s license, insurance, vehicle registration), and complete our brief
-                    orientation. Once approved, you can start accepting rides and earning money on your own schedule.
-                  </AccordionContent>
-                </AccordionItem>
-                <AccordionItem value="item-4">
-                  <AccordionTrigger>What is the earnings split between a driver and Flow?</AccordionTrigger>
-                  <AccordionContent>
-                    At Flow, we believe in fair compensation. Drivers keep a significantly higher percentage of the fare
-                    compared to traditional rideshare services. We operate on a subscription model where drivers pay a
-                    fixed weekly or monthly fee rather than a percentage of each ride, allowing them to maximize their
-                    earnings potential.
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Form Section */}
-        <section id="contact" className="w-full py-12 md:py-24 lg:py-32 bg-muted">
-          <div className="container px-4 md:px-6 mx-auto">
-            <div className="flex flex-col items-center justify-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight">Contact Us</h2>
-                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Have questions or want to learn more? Get in touch with our team.
-                </p>
-              </div>
-            </div>
-            <div className="mx-auto max-w-lg mt-8 w-full">
-              <form className="space-y-4 w-full" action="https://formspree.io/f/Team@RoamwithFlow.com" method="POST">
-                <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
-                  <Input id="name" name="name" placeholder="Your name" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" name="email" type="email" placeholder="Your email" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
-                  <Input id="phone" name="phone" type="tel" placeholder="Your phone number" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="reason">Reason for Contact</Label>
-                  <Select name="reason" required>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a reason" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="invest">To Invest</SelectItem>
-                      <SelectItem value="ride">To Ride</SelectItem>
-                      <SelectItem value="drive">To Drive</SelectItem>
-                      <SelectItem value="interview">To Interview</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="message">Comments</Label>
-                  <Textarea id="message" name="message" placeholder="Your message" className="min-h-[120px]" />
-                </div>
-                <Button type="submit" className="w-full">
-                  Submit
-                </Button>
-              </form>
-            </div>
-          </div>
-        </section>
-      </main>
-      <footer className="border-t py-6 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4 md:px-6 mx-auto">
-          <div className="flex items-center gap-2 text-lg font-semibold">
-            <Car className="h-6 w-6" />
-            <span>Flow</span>
-          </div>
-          <div className="flex gap-4">
-            <Link href="#" className="text-sm hover:underline underline-offset-4">
-              Terms of Service
-            </Link>
-            <Link href="#" className="text-sm hover:underline underline-offset-4">
-              Privacy Policy
-            </Link>
-            <Link href="#contact" className="text-sm hover:underline underline-offset-4">
-              Contact Us
-            </Link>
-          </div>
-          <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} Flow. All rights reserved.</p>
-        </div>
-      </footer>
-    </div>
+        </motion.footer>
+      </div>
   )
 }

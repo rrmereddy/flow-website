@@ -130,11 +130,11 @@ export function UserDriverLayout({ children }: UserDriverLayoutProps) {
                 <div className="flex items-center gap-2">
                   <div className="rounded-full bg-muted p-1">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                      {user?.name?.charAt(0) || (isDriver ? "D" : "U")}
+                      {user?.firstName?.charAt(0) || (isDriver ? "D" : "U")}
                     </div>
                   </div>
                   <div className="grid gap-0.5 text-sm">
-                    <div className="font-medium">{user?.name || (isDriver ? "Driver User" : "Rider User")}</div>
+                    <div className="font-medium">{user?.firstName || (isDriver ? "Driver User" : "Rider User")}</div>
                     <div className="text-xs text-muted-foreground">{user?.email || "user@example.com"}</div>
                   </div>
                   <Button variant="ghost" size="icon" className="ml-auto" onClick={() => logout()}>
@@ -160,11 +160,11 @@ export function UserDriverLayout({ children }: UserDriverLayoutProps) {
           <div className="hidden items-center gap-2 md:flex">
             <div className="rounded-full bg-muted p-1">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                {user?.name?.charAt(0) || (isDriver ? "D" : "U")}
+                {user?.firstName?.charAt(0) || (isDriver ? "D" : "U")}
               </div>
             </div>
             <div className="grid gap-0.5 text-sm">
-              <div className="font-medium">{user?.name || (isDriver ? "Driver User" : "Rider User")}</div>
+              <div className="font-medium">{user?.firstName || (isDriver ? "Driver User" : "Rider User")}</div>
               <div className="text-xs text-muted-foreground">{user?.email || "user@example.com"}</div>
             </div>
           </div>

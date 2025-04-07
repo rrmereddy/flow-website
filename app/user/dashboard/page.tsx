@@ -62,8 +62,8 @@ export default function UserDashboard() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold tracking-tight">Welcome back, {user?.name || "Rider"}!</h1>
-        <p className="text-muted-foreground">Here's an overview of your rides and activity.</p>
+        <h1 className="text-2xl font-bold tracking-tight">Welcome back, {user?.firstName || "Rider"}!</h1>
+        <p className="text-muted-foreground">Here&apos;s an overview of your rides and activity.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
