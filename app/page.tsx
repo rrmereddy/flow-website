@@ -9,9 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { motion, useScroll, useTransform, useSpring } from "framer-motion"
-import { useRef, useState, useEffect } from "react"
-import { useScrollAnimation } from "@/hooks/use-scroll-animation" // Import your custom hook
+import { motion, useScroll, useTransform, useInView } from "framer-motion"
+import { useRef } from "react"
+import { AnimatedText } from "@/lib/AnimatedText";
 
 export default function LandingPage() {
   // For parallax scrolling effect
@@ -19,24 +19,19 @@ export default function LandingPage() {
   const y1 = useTransform(scrollY, [0, 1000], [0, 200])
   const y2 = useTransform(scrollY, [0, 1000], [0, -200])
 
-  // Smooth spring physics for scrolling animations
-  const springConfig = { stiffness: 100, damping: 30, restDelta: 0.001 }
-  const springY1 = useSpring(y1, springConfig)
-  const springY2 = useSpring(y2, springConfig)
-
   // Refs for scroll animations
-  const missionRef = useRef<HTMLElement>(null)
-  const featuresRef = useRef<HTMLElement>(null)
-  const aboutRef = useRef<HTMLElement>(null)
-  const faqRef = useRef<HTMLElement>(null)
-  const contactRef = useRef<HTMLElement>(null)
+  const missionRef = useRef(null)
+  const featuresRef = useRef(null)
+  const aboutRef = useRef(null)
+  const faqRef = useRef(null)
+  const contactRef = useRef(null)
 
-  // Use custom hook for in-view detection
-  const missionAnim = useScrollAnimation(missionRef, 0.3)
-  const featuresAnim = useScrollAnimation(featuresRef, 0.3)
-  const aboutAnim = useScrollAnimation(aboutRef, 0.3)
-  const faqAnim = useScrollAnimation(faqRef, 0.3)
-  const contactAnim = useScrollAnimation(contactRef, 0.3)
+  // InView states
+  const missionInView = useInView(missionRef, { once: true, amount: 0.3 })
+  const featuresInView = useInView(featuresRef, { once: true, amount: 0.3 })
+  const aboutInView = useInView(aboutRef, { once: true, amount: 0.3 })
+  const faqInView = useInView(faqRef, { once: true, amount: 0.3 })
+  const contactInView = useInView(contactRef, { once: true, amount: 0.3 })
 
   // Animation variants
   const containerVariants = {
@@ -46,6 +41,7 @@ export default function LandingPage() {
       transition: { staggerChildren: 0.1, delayChildren: 0.2 },
     },
   }
+
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -84,7 +80,8 @@ export default function LandingPage() {
     hover: {
       y: -10,
       scale: 1.05,
-      // Removed boxShadow to avoid interpolation error
+      boxShadow:
+          "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
       transition: { type: "spring", stiffness: 400, damping: 10 },
     },
   }
@@ -97,54 +94,30 @@ export default function LandingPage() {
       rotateY: 0,
       transition: { type: "spring", stiffness: 100, damping: 12 },
     },
-    hover: {
-      y: -10,
-      scale: 1.03,
-      transition: { type: "spring", stiffness: 400, damping: 10 },
-    },
   }
 
   // Floating animation for hero circle
   const floatingAnimation = {
-    y: [0, -20, 0],
-    transition: { duration: 6, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", ease: "easeInOut" },
+    y: [-20, 0, -20],
+    transition: { duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
   }
 
   // Pulse animation for hero circle
   const pulseAnimation = {
     scale: [1, 1.05, 1],
     opacity: [0.7, 0.9, 0.7],
-    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", ease: "easeInOut" },
+    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
   }
 
   // Rotating animation for gradient background
   const rotateAnimation = {
-    rotate: [0, 360],
+    rotate: 360,
     transition: { duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
   }
 
-  // For scroll progress indicator
-  const [scrollProgress, setScrollProgress] = useState(0)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight
-      const currentScroll = window.scrollY
-      setScrollProgress((currentScroll / totalScroll) * 100)
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
-
   return (
-      <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 overflow-hidden">
-        {/* Scroll Progress Indicator */}
-        <motion.div
-            className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 z-50"
-            style={{ scaleX: scrollProgress / 100, transformOrigin: "0%" }}
-        />
-
+      // Removed "overflow-hidden" from the outer div
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
         <header className="border-b sticky top-0 z-40 bg-white bg-opacity-90 backdrop-blur-sm dark:bg-gray-900 dark:bg-opacity-90 dark:border-gray-800">
           <div className="flex h-16 items-center justify-around px-4 md:px-6">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
@@ -162,12 +135,31 @@ export default function LandingPage() {
               </Link>
             </motion.div>
 
-            <nav className="hidden md:flex gap-6 underline-offset-4">
-              {["mission", "features", "about", "faq", "contact"].map((item, index) => (
-                  <motion.div key={item} initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1, duration: 0.5 }}>
-                    <Link href={`/#${item}`} className="text-sm font-medium text-blue-500 hover:underline dark:text-blue-400">
-                      <motion.span whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                        {item.charAt(0).toUpperCase() + item.slice(1)}
+            <nav className="hidden md:flex gap-6">
+              {["Mission", "Features", "About", "FAQ", "Contact"].map((item, index) => (
+                  <motion.div
+                      key={item}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1, duration: 0.5 }}
+                  >
+                    {/* Wrap link text in a relative container with an animated underline */}
+                    <Link href={`/#${item}`} className="relative text-md font-medium text-blue-500 dark:text-blue-400">
+                      <motion.span
+                          className="relative"
+                          whileHover="hover"
+                          initial="rest"
+                          animate="rest"
+                      >
+                        {item}
+                        <motion.div
+                            variants={{
+                              rest: { width: 0 },
+                              hover: { width: "100%" },
+                            }}
+                            transition={{ duration: 0.3 }}
+                            className="absolute -bottom-1 left-0 h-0.5 bg-blue-500 dark:bg-blue-400"
+                        />
                       </motion.span>
                     </Link>
                   </motion.div>
@@ -178,7 +170,11 @@ export default function LandingPage() {
               <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.6, duration: 0.5 }}>
                 <Link href="/auth/login">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button variant="outline" size="sm" className="border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-950">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-950"
+                    >
                       Log In
                     </Button>
                   </motion.div>
@@ -206,7 +202,10 @@ export default function LandingPage() {
           <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 overflow-hidden">
             <div className="container px-4 md:px-6 mx-auto relative">
               {/* Animated background elements */}
-              <motion.div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl dark:bg-blue-500/30 z-0" animate={pulseAnimation} />
+              <motion.div
+                  className="absolute -top-20 -left-20 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl dark:bg-blue-500/30 z-0"
+                  animate={pulseAnimation}
+              />
               <motion.div
                   className="absolute top-40 -right-20 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl dark:bg-purple-500/30 z-0"
                   animate={{ ...pulseAnimation, transition: { ...pulseAnimation.transition, delay: 1 } }}
@@ -220,14 +219,15 @@ export default function LandingPage() {
                     transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
                 >
                   <div className="space-y-2">
-                    <motion.h1
-                        className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
-                    >
-                      Travel your way. Every Day.
-                    </motion.h1>
+                    <AnimatedText
+                        el="h1"
+                        text={[
+                          "Travel Your Way.",
+                          "Every Day.",
+                        ]}
+                        className="text-3xl font-bold tracking-tighter leading-tight sm:text-5xl xl:text-6xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                        repeatDelay={10000}
+                    />
                     <motion.p
                         className="max-w-[600px] text-slate-600 md:text-xl dark:text-slate-300"
                         initial={{ opacity: 0, y: 20 }}
@@ -250,10 +250,7 @@ export default function LandingPage() {
                             className="group w-full min-[400px]:w-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700 transition-all"
                         >
                           Book a Ride
-                          <motion.div
-                              animate={{ x: [0, 5, 0] }}
-                              transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5, repeatType: "reverse" }}
-                          >
+                          <motion.div animate={{ x: [0, 5, 0] }} transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5, repeatType: "reverse" }}>
                             <ArrowRight className="ml-2 h-4 w-4" />
                           </motion.div>
                         </Button>
@@ -280,7 +277,10 @@ export default function LandingPage() {
                     transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.4 }}
                 >
                   <div className="relative w-full max-w-[550px] aspect-square">
-                    <motion.div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl dark:from-blue-500/30 dark:to-purple-500/30" animate={rotateAnimation} />
+                    <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl dark:from-blue-500/30 dark:to-purple-500/30"
+                        animate={rotateAnimation}
+                    />
                     <motion.div className="relative z-10 w-full h-full flex items-center justify-center" animate={floatingAnimation}>
                       <motion.div
                           className="w-64 h-64 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center dark:from-blue-500 dark:to-purple-500"
@@ -312,13 +312,16 @@ export default function LandingPage() {
               className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={missionRef}
               initial="hidden"
-              animate={missionAnim.hasAnimated ? "visible" : "hidden"}
+              animate={missionInView ? "visible" : "hidden"}
               variants={containerVariants}
           >
             <div className="container px-4 md:px-6 mx-auto">
               <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
                 <div className="space-y-2">
-                  <motion.h2 className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400" variants={itemVariants}>
+                  <motion.h2
+                      className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                      variants={itemVariants}
+                  >
                     Our Mission
                   </motion.h2>
                 </div>
@@ -328,7 +331,7 @@ export default function LandingPage() {
                   At Flow, our mission is to make transportation seamless, safe, and accessible while empowering drivers with greater flexibility and earning potential. We strive to create a driver-first platform where our partners have the tools, support, and fair compensation they deserve.
                 </motion.p>
                 <motion.p className="text-lg text-slate-600 dark:text-slate-300" variants={itemVariants}>
-                  By prioritizing safety, community, and innovation, we connect riders with reliable drivers, ensuring affordability and trust in every ride. Flow isn’t just about getting from point A to B – it’s about building a transportation network that values and uplifts the people who make it possible.
+                  By prioritizing safety, community, and innovation, we connect riders with reliable drivers, ensuring affordability and trust in every ride. Flow isn’t just about getting from point A to B – It’s about building a transportation network that values and uplifts the people who make it possible.
                 </motion.p>
               </motion.div>
             </div>
@@ -340,12 +343,12 @@ export default function LandingPage() {
               className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900 relative overflow-hidden"
               ref={featuresRef}
               initial="hidden"
-              animate={featuresAnim.hasAnimated ? "visible" : "hidden"}
+              animate={featuresInView ? "visible" : "hidden"}
               variants={containerVariants}
           >
             {/* Animated background elements */}
-            <motion.div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl dark:bg-blue-500/10 z-0" style={{ y: springY1 }} />
-            <motion.div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl dark:bg-purple-500/10 z-0" style={{ y: springY2 }} />
+            <motion.div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl dark:bg-blue-500/10 z-0" style={{ y: y1 }} />
+            <motion.div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl dark:bg-purple-500/10 z-0" style={{ y: y2 }} />
 
             <div className="container px-4 md:px-6 mx-auto relative z-10">
               <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
@@ -410,7 +413,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div className="flex justify-center mt-8" variants={fadeInUpVariants}>
-                <Link href="#contact">
+                <Link href="/#contact">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                     <Button
                         size="lg"
@@ -430,7 +433,7 @@ export default function LandingPage() {
               className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={aboutRef}
               initial="hidden"
-              animate={aboutAnim.hasAnimated ? "visible" : "hidden"}
+              animate={aboutInView ? "visible" : "hidden"}
               variants={containerVariants}
           >
             <div className="container px-4 md:px-6 mx-auto">
@@ -452,7 +455,7 @@ export default function LandingPage() {
                 {[
                   "At Flow, we believe in seamless, efficient, and reliable transportation. Founded with the vision of redefining ridesharing in Bryan/College Station, we're committed to providing a safe and affordable way to get around town.",
                   "Our platform connects riders with independent drivers who meet strict safety and reliability standards. Whether you're heading to class, work, or a night out, Flow ensures you get there with ease.",
-                  "Driven by innovation and a passion for community, we're here to make every ride simple, stress-free, and accessible. Welcome to a new era of transportation – welcome to Flow.",
+                  "Driven by innovation and a passion for community, we're here to make every ride simple, stress-free, and accessible. Welcome to a new era of transportation- welcome to Flow.",
                 ].map((paragraph, index) => (
                     <motion.p key={index} className="text-lg text-slate-600 mb-6 dark:text-slate-300" variants={fadeInUpVariants} custom={index}>
                       {paragraph}
@@ -471,29 +474,34 @@ export default function LandingPage() {
 
                 <motion.div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
                   {[
-                    {
-                      name: "Founder Name",
-                      title: "Co-Founder & CEO",
-                      textColor: "text-blue-600 dark:text-blue-400",
-                    },
-                    {
-                      name: "Founder Name",
-                      title: "Co-Founder & CTO",
-                      textColor: "text-purple-600 dark:text-purple-400",
-                    },
+                    { name: "Founder Name", title: "Co-Founder & CEO", textColor: "text-blue-600 dark:text-blue-400" },
+                    { name: "Founder Name", title: "Co-Founder & CTO", textColor: "text-purple-600 dark:text-purple-400" },
                     {
                       name: "Founder Name",
                       title: "Co-Founder & COO",
-                      textColor: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400",
+                      textColor:
+                          "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400",
                     },
                   ].map((founder, index) => (
-                      <motion.div key={index} className="flex flex-col items-center text-center" variants={founderCardVariants} whileHover="hover" custom={index}>
+                      <motion.div
+                          key={index}
+                          className="flex flex-col items-center text-center"
+                          variants={founderCardVariants}
+                          whileHover="hover"
+                          custom={index}
+                      >
                         <motion.div
                             className="w-32 h-32 rounded-full bg-gradient-to-r from-blue-400/30 to-purple-400/30 mb-4 overflow-hidden dark:from-blue-500/40 dark:to-purple-500/40"
                             whileHover={{ scale: 1.1, rotate: 5 }}
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
-                          <Image src="/placeholder.svg?height=128&width=128" width={128} height={128} alt={`${founder.name}`} className="object-cover" />
+                          <Image
+                              src="/placeholder.svg?height=128&width=128"
+                              width={128}
+                              height={128}
+                              alt={`${founder.name}`}
+                              className="object-cover"
+                          />
                         </motion.div>
                         <motion.h4 className={`text-xl font-bold ${founder.textColor}`}>{founder.name}</motion.h4>
                         <motion.p className="text-sm text-slate-500 mt-1 dark:text-slate-400">{founder.title}</motion.p>
@@ -506,7 +514,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div className="flex justify-center mt-12" variants={fadeInUpVariants}>
-                <Link href="#contact">
+                <Link href="/#contact">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                     <Button
                         size="lg"
@@ -526,7 +534,7 @@ export default function LandingPage() {
               className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
               ref={faqRef}
               initial="hidden"
-              animate={faqAnim.hasAnimated ? "visible" : "hidden"}
+              animate={faqInView ? "visible" : "hidden"}
               variants={containerVariants}
           >
             <div className="container px-4 md:px-6 mx-auto">
@@ -594,7 +602,7 @@ export default function LandingPage() {
               className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={contactRef}
               initial="hidden"
-              animate={contactAnim.hasAnimated ? "visible" : "hidden"}
+              animate={contactInView ? "visible" : "hidden"}
               variants={containerVariants}
           >
             <div className="container px-4 md:px-6 mx-auto">
@@ -626,7 +634,13 @@ export default function LandingPage() {
                     { id: "email", label: "Email", type: "email", placeholder: "Your email" },
                     { id: "phone", label: "Phone", type: "tel", placeholder: "Your phone number" },
                   ].map((field, index) => (
-                      <motion.div key={field.id} className="space-y-2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * (index + 1), duration: 0.5 }}>
+                      <motion.div
+                          key={field.id}
+                          className="space-y-2"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.1 * (index + 1), duration: 0.5 }}
+                      >
                         <Label htmlFor={field.id} className="text-blue-600 dark:text-blue-400">
                           {field.label}
                         </Label>
@@ -677,7 +691,13 @@ export default function LandingPage() {
                     </motion.div>
                   </motion.div>
 
-                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7, duration: 0.5 }} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                  <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.7, duration: 0.5 }}
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                  >
                     <Button
                         type="submit"
                         className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
@@ -710,7 +730,10 @@ export default function LandingPage() {
             <motion.div className="flex gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }}>
               {["Terms of Service", "Privacy Policy", "Contact Us"].map((item) => (
                   <motion.div key={item} whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                    <Link href={item === "Contact Us" ? "#contact" : "#"} className="text-sm text-blue-600 hover:text-blue-800 hover:underline underline-offset-4 dark:text-blue-400 dark:hover:text-blue-300">
+                    <Link
+                        href={item === "Contact Us" ? "#contact" : "#"}
+                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
+                    >
                       {item}
                     </Link>
                   </motion.div>
