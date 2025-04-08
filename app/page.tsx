@@ -245,41 +245,61 @@ export default function LandingPage() {
                   >
                     <Link href="/auth/signup?role=user">
                       <motion.div
-                          whileHover={{ scale: 1.05, x: 5 }}
+                          whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           transition={{ type: "spring", stiffness: 400, damping: 10 }}
                           className="relative overflow-hidden"
                       >
-                        <Button
-                            size="lg"
-                            className="group w-full min-[400px]:w-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700 transition-all relative overflow-hidden"
-                        >
-                          <span className="relative z-10 flex items-center">
-                            Book a Ride
-                            <motion.div
-                                animate={{ x: [0, 5, 0] }}
-                                transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5, repeatType: "reverse" }}
-                            >
-                              <ArrowRight className="ml-2 h-4 w-4" />
-                            </motion.div>
-                          </span>
-                          {/* Shimmer effect overlay */}
+                        {/* Shimmering border container */}
+                        <div className="relative p-0.5 rounded-lg overflow-hidden">
+                          {/* Animated border effect */}
                           <motion.div
-                              className="absolute inset-0 w-full h-full"
+                              className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-500 to-white"
                               style={{
-                                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
                                 backgroundSize: "200% 100%",
                               }}
                               animate={{
-                                backgroundPosition: ["200% 0", "-200% 0"]
+                                backgroundPosition: ["100% 100%", "0% 300%"]
                               }}
                               transition={{
                                 ease: "linear",
-                                duration: 5,
-                                repeat: Number.POSITIVE_INFINITY,
+                                duration: 3,
+                                repeat: Infinity,
+                                repeatType: "reverse"
                               }}
                           />
-                        </Button>
+                          <Button
+                              size="lg"
+                              className="w-full min-[400px]:w-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700 transition-all relative overflow-hidden z-10"
+                          >
+                            <span className="relative z-10 flex items-center">
+                              Book a Ride
+                              <motion.div
+                                  animate={{ x: [0, 5, 0] }}
+                                  transition={{ repeat: Number.POSITIVE_INFINITY, duration: 5.5, }}
+                              >
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                              </motion.div>
+                            </span>
+
+                            {/* Shimmer effect overlay */}
+                            <motion.div
+                                className="absolute inset-0 w-full h-full"
+                                style={{
+                                  background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+                                  backgroundSize: "200% 100%",
+                                }}
+                                animate={{
+                                  backgroundPosition: ["200% 0", "-200% 0"]
+                                }}
+                                transition={{
+                                  ease: "linear",
+                                  duration: 5,
+                                  repeat: Infinity,
+                                }}
+                            />
+                          </Button>
+                        </div>
                       </motion.div>
                     </Link>
                     <Link href="/auth/signup?role=driver">
