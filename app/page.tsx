@@ -118,7 +118,7 @@ export default function LandingPage() {
   return (
       // Removed "overflow-hidden" from the outer div
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
-        <header className="border-b sticky top-0 z-40 bg-white bg-opacity-90 backdrop-blur-sm dark:bg-gray-900 dark:bg-opacity-90 dark:border-gray-800">
+        <header className="border-b sticky top-0 z-40 bg-transparent bg-opacity-90 backdrop-blur-sm dark:border-gray-800">
           <div className="flex h-16 items-center justify-around px-4 md:px-6">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
               <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
@@ -244,15 +244,41 @@ export default function LandingPage() {
                       transition={{ delay: 0.7, duration: 0.8 }}
                   >
                     <Link href="/auth/signup?role=user">
-                      <motion.div whileHover={{ scale: 1.05, x: 5 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                      <motion.div
+                          whileHover={{ scale: 1.05, x: 5 }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                          className="relative overflow-hidden"
+                      >
                         <Button
                             size="lg"
-                            className="group w-full min-[400px]:w-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700 transition-all"
+                            className="group w-full min-[400px]:w-auto bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700 transition-all relative overflow-hidden"
                         >
-                          Book a Ride
-                          <motion.div animate={{ x: [0, 5, 0] }} transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5, repeatType: "reverse" }}>
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                          </motion.div>
+                          <span className="relative z-10 flex items-center">
+                            Book a Ride
+                            <motion.div
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ repeat: Number.POSITIVE_INFINITY, duration: 1.5, repeatType: "reverse" }}
+                            >
+                              <ArrowRight className="ml-2 h-4 w-4" />
+                            </motion.div>
+                          </span>
+                          {/* Shimmer effect overlay */}
+                          <motion.div
+                              className="absolute inset-0 w-full h-full"
+                              style={{
+                                background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+                                backgroundSize: "200% 100%",
+                              }}
+                              animate={{
+                                backgroundPosition: ["200% 0", "-200% 0"]
+                              }}
+                              transition={{
+                                ease: "linear",
+                                duration: 5,
+                                repeat: Number.POSITIVE_INFINITY,
+                              }}
+                          />
                         </Button>
                       </motion.div>
                     </Link>
@@ -308,7 +334,7 @@ export default function LandingPage() {
 
           {/* Mission Section */}
           <motion.section
-              id="mission"
+              id="Mission"
               className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={missionRef}
               initial="hidden"
@@ -339,7 +365,7 @@ export default function LandingPage() {
 
           {/* Features Section */}
           <motion.section
-              id="features"
+              id="Features"
               className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900 relative overflow-hidden"
               ref={featuresRef}
               initial="hidden"
@@ -413,7 +439,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div className="flex justify-center mt-8" variants={fadeInUpVariants}>
-                <Link href="/#contact">
+                <Link href="/#Contact">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                     <Button
                         size="lg"
@@ -429,7 +455,7 @@ export default function LandingPage() {
 
           {/* About Us Section */}
           <motion.section
-              id="about"
+              id="About"
               className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={aboutRef}
               initial="hidden"
@@ -514,7 +540,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div className="flex justify-center mt-12" variants={fadeInUpVariants}>
-                <Link href="/#contact">
+                <Link href="/#Contact">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                     <Button
                         size="lg"
@@ -530,7 +556,7 @@ export default function LandingPage() {
 
           {/* FAQ Section */}
           <motion.section
-              id="faq"
+              id="FAQ"
               className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
               ref={faqRef}
               initial="hidden"
@@ -598,14 +624,14 @@ export default function LandingPage() {
 
           {/* Contact Form Section */}
           <motion.section
-              id="contact"
+              id="Contact"
               className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={contactRef}
               initial="hidden"
               animate={contactInView ? "visible" : "hidden"}
               variants={containerVariants}
           >
-            <div className="container px-4 md:px-6 mx-auto">
+            <div className="px-4 md:px-6 mx-auto pr-6">
               <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
                 <div className="space-y-2">
                   <motion.h2

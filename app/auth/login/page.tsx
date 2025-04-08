@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useAuth } from "@/lib/auth"
+import {ShineBorder} from "@/components/magicui/shine-border";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -47,7 +48,13 @@ export default function LoginPage() {
           <Car className="h-6 w-6" />
           <span>Flow</span>
         </Link>
-        <div className="mx-auto w-full max-w-md space-y-6 rounded-lg border bg-card p-6 shadow-lg">
+        <div className="mx-auto w-full max-w-md space-y-6 rounded-lg border bg-card p-6 shadow-lg relative overflow-hidden">
+          {/* Position ShineBorder within the card container */}
+          <ShineBorder
+              shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+              borderWidth={2}
+              duration={10}
+          />
           <div className="space-y-2 text-center">
             <h1 className="text-3xl font-bold">Login</h1>
             <p className="text-muted-foreground">Enter your credentials to access your account</p>

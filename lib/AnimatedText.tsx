@@ -1,5 +1,5 @@
 import { motion, useInView, useAnimation, Variant } from "framer-motion";
-import { useEffect, useRef } from "react";
+import {JSX, useEffect, useRef} from "react";
 
 type AnimatedTextProps = {
     text: string | string[];
@@ -43,11 +43,11 @@ export const AnimatedText = ({
     useEffect(() => {
         let timeout: NodeJS.Timeout;
         const show = () => {
-            controls.start("visible");
+            controls.start("visible").then();
             if (repeatDelay) {
                 timeout = setTimeout(async () => {
                     await controls.start("hidden");
-                    controls.start("visible");
+                    controls.start("visible").then();
                 }, repeatDelay);
             }
         };
@@ -55,7 +55,7 @@ export const AnimatedText = ({
         if (isInView) {
             show();
         } else {
-            controls.start("hidden");
+            controls.start("hidden").then();
         }
 
         return () => clearTimeout(timeout);
