@@ -88,6 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           firstName,
           lastName,
           role,
+          //accountStatus: "not verified",
           createdAt: new Date().toISOString(),
         })
       } else if (role === "driver") {
@@ -96,17 +97,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           firstName,
           lastName,
           role,
+          //accountStatus: "not verified",
           createdAt: new Date().toISOString(),
         })
       } else {
         toast.error("Invalid role selected")
-        throw new Error("Invalid role selected")
+        new Error("Invalid role selected")
       }
 
       await sendEmailVerification(firebaseUser, {
         url: `${window.location.origin}/auth/verify-email`,
       })
       toast.success("Verification email sent. Please check your inbox.")
+      router.push("/auth/login")
     } catch (error) {
       console.error("Error signing up:", error)
       throw error
@@ -123,7 +126,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!userCredential.user.emailVerified) {
         await signOut(auth)
         await sendEmailVerification(userCredential.user)
-        throw new Error("Email not verified")
+        new Error("auth/email-not-verified")
       }
 
       // Get user data and handle routing here
@@ -136,13 +139,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (userRole === "admin") {
           router.push("/admin/dashboard")
         } else if (userRole === "driver") {
-          router.push("/driver/dashboard")
+          // Use when the app is launched
+          //router.push("/driver/dashboard")
+          router.push("/auth/waitlist")
         } else {
-          router.push("/user/dashboard")
+          // use when the app is launched
+          //router.push("/user/dashboard")
+          router.push("/auth/waitlist")
         }
       } else {
-        toast.error("User not found")
-        throw new Error("User data not found")
+        new Error("User not found")
+        //throw new Error("User data not found")
       }
     } catch (error) {
       throw error

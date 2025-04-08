@@ -777,7 +777,7 @@ export default function LandingPage() {
               {["Terms of Service", "Privacy Policy", "Contact Us"].map((item) => (
                   <motion.div key={item} whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                     <Link
-                        href={item === "Contact Us" ? "#contact" : "#"}
+                        href={item === "Contact Us" ? "/#Contact" : "#"}
                         className="text-sm text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
                     >
                       {item}
