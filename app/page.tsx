@@ -10,6 +10,7 @@ import { useRef } from "react"
 import { AnimatedText } from "@/lib/AnimatedText";
 import ContactForm from "@/components/ContactForm";
 import { PrototypeCarousel } from "@/components/PrototypeCarousel";
+import { ShinyButton } from "@/components/magicui/shiny-button";
 
 export default function LandingPage() {
   // For parallax scrolling effect
@@ -185,7 +186,7 @@ export default function LandingPage() {
 
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 overflow-hidden">
+          <section className="w-full py-12 overflow-hidden">
             <div className="container px-4 md:px-6 mx-auto relative">
               {/* Animated background elements */}
               <motion.div
@@ -480,7 +481,7 @@ export default function LandingPage() {
                   Our Founders
                 </motion.h3>
 
-                <motion.div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
+                <motion.div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
                   {[
                     { name: "Justin Le", title: "Lead Backend Developer", textColor: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400" },
                     { name: "Moulik Mishra", title: "CEO", textColor: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400" },
@@ -523,12 +524,15 @@ export default function LandingPage() {
               <motion.div className="flex justify-center mt-12" variants={fadeInUpVariants}>
                 <Link href="/#Contact">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                    <Button
-                        size="lg"
-                        className="text-lg px-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                    <ShinyButton
+                      className="border-1 border-black dark:border-white"
                     >
-                      Are you ready to go with Flow?
-                    </Button>
+                      <span
+                          className="text-lg px-4 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                      >
+                        Are you ready to go with Flow?
+                      </span>
+                    </ShinyButton>
                   </motion.div>
                 </Link>
               </motion.div>
