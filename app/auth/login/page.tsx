@@ -30,13 +30,6 @@ export default function LoginPage() {
         description: "Welcome back to Flow!",
       })
     } catch (error) {
-      // if (error instanceof Error && error.message === "Email not verified") {
-      //   toast.error("Please verify your email before logging in. A new verification email has been sent.")
-      // } else {
-      //   toast.error("Login failed", {
-      //     description: "Please check your credentials and try again.",
-      //   })
-      // }
       ErrorToast(error)
       console.error("Login error:", error)
     } finally {
