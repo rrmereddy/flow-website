@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/lib/auth"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -30,6 +31,7 @@ export default function RootLayout({
           <AuthProvider>
             {children}
             <SpeedInsights/>
+            <Analytics/>
             <Toaster position="top-center"/>
           </AuthProvider>
         </ThemeProvider>

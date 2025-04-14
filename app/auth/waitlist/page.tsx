@@ -69,7 +69,7 @@ export default function Page() {
                     <Link href="/" className="w-full">
                         <Button variant="default" className="w-full">
                             <ArrowLeft className="mr-2 h-4 w-4" />
-                            Return to Homepage
+                            Return to Landing Page
                         </Button>
                     </Link>
                 </CardFooter>

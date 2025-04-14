@@ -125,28 +125,29 @@ const ContactForm = () => {
                 transition={{ duration: 0.5, delay: 0.2 }}
             >
                 {[
-                    { id: "name", label: "Name", type: "text", placeholder: "Your name" },
-                    { id: "email", label: "Email", type: "email", placeholder: "Your email" },
+                    { name: "name", label: "Name", type: "text", placeholder: "Your name" },
+                    { name: "email", label: "Email", type: "email", placeholder: "Your email" },
                 ].map((field, index) => (
                     <motion.div
-                        key={field.id}
+                        key={field.name}
                         className="space-y-2"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 * (index + 1), duration: 0.5 }}
                     >
-                        <Label htmlFor={field.id} className="text-blue-600 dark:text-blue-400">
+                        <Label htmlFor={field.name} className="text-blue-600 dark:text-blue-400">
                             {field.label}
                         </Label>
                         <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                             <Input
-                                id={field.id}
-                                name={field.id}
+                                id={field.name}
+                                name={field.name}
                                 type={field.type}
                                 placeholder={field.placeholder}
                                 required
+                                autoComplete={field.name}
                                 onChange={handleChange}
-                                value={formData[field.id]} // binding value for controlled component
+                                value={formData[field.name]} // binding value for controlled component
                                 className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600"
                             />
                         </motion.div>
@@ -170,6 +171,7 @@ const ContactForm = () => {
                             type="tel"
                             placeholder="(123) 456-7890"
                             required
+                            autoComplete="tel"
                             onChange={handleChange}
                             value={formData.phone}
                             className='border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600'
@@ -193,7 +195,9 @@ const ContactForm = () => {
                             value={formData.reason}
                             onValueChange={handleSelectChange}
                         >
-                            <SelectTrigger className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600">
+                            <SelectTrigger
+                                id="reason"
+                                className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600">
                                 <SelectValue placeholder="Select a reason" />
                             </SelectTrigger>
                             <SelectContent className="dark:bg-gray-800 dark:border-blue-800 dark:text-white">
@@ -222,6 +226,7 @@ const ContactForm = () => {
                             name="message"
                             placeholder="Your message"
                             onChange={handleChange}
+                            autoComplete="off"
                             value={formData.message}
                             className="min-h-[120px] border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600"
                         />

@@ -10,7 +10,7 @@ import {
 import Iphone15Pro from "@/components/magicui/iphone-15-pro";
 
 export function PrototypeCarousel() {
-    const images = ["screen.png", "Prototype1.png", "Prototype2.png", "Prototype3.png", "Prototype4.png", "Prototype5.png"];
+    const images = ["/screen.png", "/Prototype1.png", "/Prototype2.png", "/Prototype3.png", "/Prototype4.png", "/Prototype5.png"];
     return (
         <Carousel className="w-full max-w-xs items-center justify-center">
             <CarouselContent>
