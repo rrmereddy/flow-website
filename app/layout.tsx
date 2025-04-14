@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
     <head>
-      <link rel="icon" href="/logo.PNG" />
+      <link rel="icon" href="/logo.png" />
       <title>Flow - Your Ride, Your Way</title>
     </head>
       <body className={inter.className}>
