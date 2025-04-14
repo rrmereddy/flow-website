@@ -7,10 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
-import { useUser } from "@/lib/auth"
 
 export default function DriverRides() {
-  const { user } = useUser()
   const { toast } = useToast()
   const [isAvailable, setIsAvailable] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
@@ -74,7 +72,7 @@ export default function DriverRides() {
       setIsLoading(false)
       toast({
         title: "Ride Accepted",
-        description: "You have successfully accepted the ride!",
+        description: "You have successfully accepted the ride: " + rideId,
       })
     }, 1500)
   }
@@ -82,7 +80,7 @@ export default function DriverRides() {
   const handleDeclineRide = (rideId: string) => {
     toast({
       title: "Ride Declined",
-      description: "You have declined the ride request.",
+      description: "You have declined the ride request: " + rideId,
     })
   }
 
@@ -198,9 +196,9 @@ export default function DriverRides() {
               <CardContent className="p-8">
                 <div className="flex flex-col items-center justify-center text-center">
                   <Car className="h-12 w-12 text-muted-foreground/50" />
-                  <h3 className="mt-4 text-lg font-medium">You're Currently Unavailable</h3>
+                  <h3 className="mt-4 text-lg font-medium">You&apos;re Currently Unavailable</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    Toggle your status to "Available" to start receiving ride requests.
+                    Toggle your status to &quot;Available&quot; to start receiving ride requests.
                   </p>
                   <Button className="mt-4" onClick={() => setIsAvailable(true)}>
                     Go Online
@@ -252,7 +250,7 @@ export default function DriverRides() {
                   <Car className="h-12 w-12 text-muted-foreground/50" />
                   <h3 className="mt-4 text-lg font-medium">No Upcoming Rides</h3>
                   <p className="mt-2 text-sm text-muted-foreground">
-                    You don't have any upcoming rides scheduled. Accept ride requests to see them here.
+                    You don&apos;t have any upcoming rides scheduled. Accept ride requests to see them here.
                   </p>
                 </div>
               </CardContent>

@@ -60,7 +60,7 @@ export default function SignupPage() {
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
             <Link href="/" className="flex items-center gap-2 py-5 text-3xl font-bold">
               <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                <Image src="/logo2.png" width={30} height={30} alt="Logo Picture" />
+                <Image src="/logo.png" width={30} height={30} alt="Logo Picture" />
               </motion.div>
               <motion.span
                   className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"

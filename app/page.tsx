@@ -5,13 +5,11 @@ import Image from "next/image"
 import { ArrowRight, Clock, MapPin, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
 import { useRef } from "react"
 import { AnimatedText } from "@/lib/AnimatedText";
+import ContactForm from "@/components/ContactForm";
+import { PrototypeCarousel } from "@/components/PrototypeCarousel";
 
 export default function LandingPage() {
   // For parallax scrolling effect
@@ -96,23 +94,11 @@ export default function LandingPage() {
     },
   }
 
-  // Floating animation for hero circle
-  const floatingAnimation = {
-    y: [-20, 0, -20],
-    transition: { duration: 6, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
-  }
-
   // Pulse animation for hero circle
   const pulseAnimation = {
     scale: [1, 1.05, 1],
     opacity: [0.7, 0.9, 0.7],
     transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
-  }
-
-  // Rotating animation for gradient background
-  const rotateAnimation = {
-    rotate: 360,
-    transition: { duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
   }
 
   return (
@@ -123,7 +109,7 @@ export default function LandingPage() {
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
               <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
                 <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                  <Image src="/logo2.png" width={30} height={30} alt="Logo Picture" />
+                  <Image src="/logo.png" width={30} height={30} alt="Logo Picture" />
                 </motion.div>
                 <motion.span
                     className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
@@ -322,31 +308,7 @@ export default function LandingPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.4 }}
                 >
-                  <div className="relative w-full max-w-[550px] aspect-square">
-                    <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-3xl dark:from-blue-500/30 dark:to-purple-500/30"
-                        animate={rotateAnimation}
-                    />
-                    <motion.div className="relative z-10 w-full h-full flex items-center justify-center" animate={floatingAnimation}>
-                      <motion.div
-                          className="w-64 h-64 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 flex items-center justify-center dark:from-blue-500 dark:to-purple-500"
-                          whileHover={{ scale: 1.1, rotate: 5 }}
-                          transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                      >
-                        <motion.div className="flex flex-col items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 0.5 }}>
-                          {[1, 2, 3].map((_, index) => (
-                              <motion.div
-                                  key={index}
-                                  className="w-32 h-4 bg-white rounded-full dark:bg-gray-200"
-                                  initial={{ scaleX: 0 }}
-                                  animate={{ scaleX: 1 }}
-                                  transition={{ delay: 0.9 + index * 0.2, duration: 0.5 }}
-                              />
-                          ))}
-                        </motion.div>
-                      </motion.div>
-                    </motion.div>
-                  </div>
+                  <PrototypeCarousel />
                 </motion.div>
               </div>
             </div>
@@ -499,7 +461,7 @@ export default function LandingPage() {
 
               <motion.div className="mx-auto grid max-w-3xl mt-8 text-center" variants={itemVariants}>
                 {[
-                  "At Flow, we believe in seamless, efficient, and reliable transportation. Founded with the vision of redefining ridesharing in Bryan/College Station, we're committed to providing a safe and affordable way to get around town.",
+                  "At Flow, we believe in seamless, efficient, and reliable transportation. Founded with the vision of redefining ride sharing in Bryan/College Station, we're committed to providing a safe and affordable way to get around town.",
                   "Our platform connects riders with independent drivers who meet strict safety and reliability standards. Whether you're heading to class, work, or a night out, Flow ensures you get there with ease.",
                   "Driven by innovation and a passion for community, we're here to make every ride simple, stress-free, and accessible. Welcome to a new era of transportation- welcome to Flow.",
                 ].map((paragraph, index) => (
@@ -520,11 +482,11 @@ export default function LandingPage() {
 
                 <motion.div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
                   {[
-                    { name: "Founder Name", title: "Co-Founder & CEO", textColor: "text-blue-600 dark:text-blue-400" },
-                    { name: "Founder Name", title: "Co-Founder & CTO", textColor: "text-purple-600 dark:text-purple-400" },
+                    { name: "Justin Le", title: "Lead Backend Developer", textColor: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400" },
+                    { name: "Moulik Mishra", title: "CEO", textColor: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400" },
                     {
-                      name: "Founder Name",
-                      title: "Co-Founder & COO",
+                      name: "Ritin Mereddy",
+                      title: "Lead Frontend Developer",
                       textColor:
                           "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400",
                     },
@@ -541,19 +503,18 @@ export default function LandingPage() {
                             whileHover={{ scale: 1.1, rotate: 5 }}
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
-                          <Image
-                              src="/placeholder.svg?height=128&width=128"
-                              width={128}
-                              height={128}
-                              alt={`${founder.name}`}
-                              className="object-cover"
-                          />
+                          <div className="w-32 h-32 rounded-full overflow-hidden">
+                            <Image
+                                src={`/${founder.name.split(" ")[0]}.jpg`}
+                                width={128}
+                                height={128}
+                                alt={`${founder.name}`}
+                                className="object-cover w-full h-full"
+                            />
+                          </div>
                         </motion.div>
-                        <motion.h4 className={`text-xl font-bold ${founder.textColor}`}>{founder.name}</motion.h4>
+                        <motion.h4 className={`text-xl font-bold ${founder.textColor}`}>{founder.name.split(" ")[0]}</motion.h4>
                         <motion.p className="text-sm text-slate-500 mt-1 dark:text-slate-400">{founder.title}</motion.p>
-                        <motion.p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue.
-                        </motion.p>
                       </motion.div>
                   ))}
                 </motion.div>
@@ -625,7 +586,7 @@ export default function LandingPage() {
                     {
                       question: "What is the earnings split between a driver and Flow?",
                       answer:
-                          "At Flow, we believe in fair compensation. Drivers keep a significantly higher percentage of the fare compared to traditional rideshare services. We operate on a subscription model where drivers pay a fixed weekly or monthly fee rather than a percentage of each ride, allowing them to maximize their earnings potential.",
+                          "At Flow, we believe in fair compensation. Drivers keep a significantly higher percentage of the fare compared to traditional ride share services. We operate on a subscription model where drivers pay a fixed weekly or monthly fee rather than a percentage of each ride, allowing them to maximize their earnings potential.",
                       color: "text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300",
                       borderColor: "border-blue-200 dark:border-blue-800",
                     },
@@ -666,93 +627,7 @@ export default function LandingPage() {
                 </div>
               </motion.div>
 
-              <motion.div className="mx-auto max-w-lg mt-8 w-full" variants={fadeInUpVariants}>
-                <motion.form
-                    className="space-y-4 w-full"
-                    action="https://formspree.io/f/Team@RoamwithFlow.com"
-                    method="POST"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                  {[
-                    { id: "name", label: "Name", type: "text", placeholder: "Your name" },
-                    { id: "email", label: "Email", type: "email", placeholder: "Your email" },
-                    { id: "phone", label: "Phone", type: "tel", placeholder: "Your phone number" },
-                  ].map((field, index) => (
-                      <motion.div
-                          key={field.id}
-                          className="space-y-2"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.1 * (index + 1), duration: 0.5 }}
-                      >
-                        <Label htmlFor={field.id} className="text-blue-600 dark:text-blue-400">
-                          {field.label}
-                        </Label>
-                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                          <Input
-                              id={field.id}
-                              name={field.id}
-                              type={field.type}
-                              placeholder={field.placeholder}
-                              required
-                              className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600"
-                          />
-                        </motion.div>
-                      </motion.div>
-                  ))}
-
-                  <motion.div className="space-y-2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 0.5 }}>
-                    <Label htmlFor="reason" className="text-blue-600 dark:text-blue-400">
-                      Reason for Contact
-                    </Label>
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Select name="reason" required>
-                        <SelectTrigger className="border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600">
-                          <SelectValue placeholder="Select a reason" />
-                        </SelectTrigger>
-                        <SelectContent className="dark:bg-gray-800 dark:border-blue-800 dark:text-white">
-                          <SelectItem value="invest">To Invest</SelectItem>
-                          <SelectItem value="ride">To Ride</SelectItem>
-                          <SelectItem value="drive">To Drive</SelectItem>
-                          <SelectItem value="interview">To Interview</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </motion.div>
-                  </motion.div>
-
-                  <motion.div className="space-y-2" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.5 }}>
-                    <Label htmlFor="message" className="text-blue-600 dark:text-blue-400">
-                      Comments
-                    </Label>
-                    <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                      <Textarea
-                          id="message"
-                          name="message"
-                          placeholder="Your message"
-                          className="min-h-[120px] border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600"
-                      />
-                    </motion.div>
-                  </motion.div>
-
-                  <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.7, duration: 0.5 }}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                  >
-                    <Button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
-                    >
-                      Submit
-                    </Button>
-                  </motion.div>
-                </motion.form>
-              </motion.div>
+              <ContactForm />
             </div>
           </motion.section>
         </main>
@@ -766,7 +641,7 @@ export default function LandingPage() {
           <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row px-4 md:px-6 mx-auto">
             <motion.div className="flex items-center gap-2 text-lg font-semibold" whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
               <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
-                <Image src="/logo2.png" width={30} height={30} alt="Logo Picture" />
+                <Image src="/logo.png" width={30} height={30} alt="Logo Picture" />
               </motion.div>
               <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
               Flow

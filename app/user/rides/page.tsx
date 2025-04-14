@@ -56,7 +56,7 @@ export default function UserRides() {
       setIsLoading(false)
       toast({
         title: "Ride Booked",
-        description: "Your ride has been successfully booked!",
+        description: "Your ride has been successfully booked: " + driverId,
       })
     }, 1500)
   }
