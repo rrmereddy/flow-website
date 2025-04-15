@@ -10,6 +10,7 @@ import { useRef } from "react"
 import { AnimatedText } from "@/lib/AnimatedText";
 import ContactForm from "@/components/ContactForm";
 import { PrototypeCarousel } from "@/components/PrototypeCarousel";
+import { ShinyButton } from "@/components/magicui/shiny-button";
 
 export default function LandingPage() {
   // For parallax scrolling effect
@@ -104,7 +105,7 @@ export default function LandingPage() {
   return (
       // Removed "overflow-hidden" from the outer div
       <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
-        <header className="border-b sticky top-0 z-40 bg-transparent bg-opacity-90 backdrop-blur-sm dark:border-gray-800">
+        <header className="border-b border-blue-950 sticky top-0 z-40 bg-transparent bg-opacity-90 backdrop-blur-sm dark:border-gray-800">
           <div className="flex h-16 items-center justify-around px-4 md:px-6">
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
               <Link href="/" className="flex items-center gap-2 text-lg font-semibold">
@@ -185,7 +186,7 @@ export default function LandingPage() {
 
         <main className="flex-1">
           {/* Hero Section */}
-          <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 overflow-hidden">
+          <section className="w-full py-8 overflow-hidden">
             <div className="container px-4 md:px-6 mx-auto relative">
               {/* Animated background elements */}
               <motion.div
@@ -317,7 +318,7 @@ export default function LandingPage() {
           {/* Mission Section */}
           <motion.section
               id="Mission"
-              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
+              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
               ref={missionRef}
               initial="hidden"
               animate={missionInView ? "visible" : "hidden"}
@@ -348,7 +349,7 @@ export default function LandingPage() {
           {/* Features Section */}
           <motion.section
               id="Features"
-              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900 relative overflow-hidden"
+              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 relative overflow-hidden"
               ref={featuresRef}
               initial="hidden"
               animate={featuresInView ? "visible" : "hidden"}
@@ -438,7 +439,7 @@ export default function LandingPage() {
           {/* About Us Section */}
           <motion.section
               id="About"
-              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
+              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
               ref={aboutRef}
               initial="hidden"
               animate={aboutInView ? "visible" : "hidden"}
@@ -480,15 +481,14 @@ export default function LandingPage() {
                   Our Founders
                 </motion.h3>
 
-                <motion.div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
+                <motion.div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
                   {[
-                    { name: "Justin Le", title: "Lead Backend Developer", textColor: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400" },
-                    { name: "Moulik Mishra", title: "CEO", textColor: "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400" },
+                    { name: "Justin Le", link: "https://www.linkedin.com/in/justindtle/",title: "Lead Backend Developer"},
+                    { name: "Moulik Mishra", link: "https://www.linkedin.com/in/moulik-mishra-014b801a6/", title: "CEO"},
                     {
                       name: "Ritin Mereddy",
                       title: "Lead Frontend Developer",
-                      textColor:
-                          "bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400",
+                      link: "https://www.linkedin.com/in/ritinm/",
                     },
                   ].map((founder, index) => (
                       <motion.div
@@ -504,16 +504,20 @@ export default function LandingPage() {
                             transition={{ type: "spring", stiffness: 400, damping: 10 }}
                         >
                           <div className="w-32 h-32 rounded-full overflow-hidden">
-                            <Image
-                                src={`/${founder.name.split(" ")[0]}.jpg`}
-                                width={128}
-                                height={128}
-                                alt={`${founder.name}`}
-                                className="object-cover w-full h-full"
-                            />
+                            <Link href={founder.link} legacyBehavior>
+                              <a target="_blank" rel="noopener noreferrer">
+                                <Image
+                                    src={`/${founder.name.split(" ")[0]}.jpg`}
+                                    width={128}
+                                    height={128}
+                                    alt={`${founder.name}`}
+                                    className="object-cover w-full h-full"
+                                />
+                              </a>
+                            </Link>
                           </div>
                         </motion.div>
-                        <motion.h4 className={`text-xl font-bold ${founder.textColor}`}>{founder.name.split(" ")[0]}</motion.h4>
+                        <motion.h4 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">{founder.name.split(" ")[0]}</motion.h4>
                         <motion.p className="text-sm text-slate-500 mt-1 dark:text-slate-400">{founder.title}</motion.p>
                       </motion.div>
                   ))}
@@ -523,12 +527,15 @@ export default function LandingPage() {
               <motion.div className="flex justify-center mt-12" variants={fadeInUpVariants}>
                 <Link href="/#Contact">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                    <Button
-                        size="lg"
-                        className="text-lg px-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                    <ShinyButton
+                      className="border-1 border-black dark:border-white"
                     >
-                      Are you ready to go with Flow?
-                    </Button>
+                      <span
+                          className="text-lg px-4 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                      >
+                        Are you ready to go with Flow?
+                      </span>
+                    </ShinyButton>
                   </motion.div>
                 </Link>
               </motion.div>
@@ -538,7 +545,7 @@ export default function LandingPage() {
           {/* FAQ Section */}
           <motion.section
               id="FAQ"
-              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
+              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={faqRef}
               initial="hidden"
               animate={faqInView ? "visible" : "hidden"}
@@ -592,9 +599,13 @@ export default function LandingPage() {
                     },
                   ].map((faq, index) => (
                       <motion.div key={index} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 * index, duration: 0.5 }}>
-                        <AccordionItem value={`item-${index + 1}`} className={faq.borderColor}>
-                          <AccordionTrigger className={faq.color}>{faq.question}</AccordionTrigger>
-                          <AccordionContent className="text-slate-600 dark:text-slate-300">{faq.answer}</AccordionContent>
+                        <AccordionItem value={`item-${index + 1}`} className={`{faq.borderColor}`}>
+                          <AccordionTrigger className={`${faq.color} text-lg md:text-xl font-medium`}>
+                            {faq.question}
+                          </AccordionTrigger>
+                          <AccordionContent className="text-slate-600 dark:text-slate-300 text-base md:text-lg">
+                            {faq.answer}
+                          </AccordionContent>
                         </AccordionItem>
                       </motion.div>
                   ))}
@@ -606,7 +617,7 @@ export default function LandingPage() {
           {/* Contact Form Section */}
           <motion.section
               id="Contact"
-              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
+              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
               ref={contactRef}
               initial="hidden"
               animate={contactInView ? "visible" : "hidden"}
@@ -633,7 +644,7 @@ export default function LandingPage() {
         </main>
 
         <motion.footer
-            className="justify-around border-t border-blue-100 py-6 md:py-0 bg-white dark:bg-gray-900 dark:border-gray-800"
+            className="justify-around border-t border-blue-100 py-6 md:py-0 dark:border-gray-800 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
