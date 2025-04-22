@@ -6,17 +6,20 @@ import { ArrowRight, Clock, MapPin, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
-import { useRef } from "react"
+import {useRef, useState} from "react"
 import { AnimatedText } from "@/lib/AnimatedText";
 import ContactForm from "@/components/ContactForm";
 import { PrototypeCarousel } from "@/components/PrototypeCarousel";
 import { ShinyButton } from "@/components/magicui/shiny-button";
+import LegalModal from "@/components/LegalModal";
 
 export default function LandingPage() {
   // For parallax scrolling effect
   const { scrollY } = useScroll()
   const y1 = useTransform(scrollY, [0, 1000], [0, 200])
   const y2 = useTransform(scrollY, [0, 1000], [0, -200])
+
+  const [openModal, setOpenModal] = useState<"terms" | "privacy" | null>(null);
 
   // Refs for scroll animations
   const missionRef = useRef(null)
@@ -389,7 +392,7 @@ export default function LandingPage() {
                   {
                     icon: <Clock className="h-8 w-8 text-purple-500 dark:text-purple-400" />,
                     title: "Subscription Driven",
-                    description: "With a subscription model, drivers have fixed costs, increasing earnings potential.",
+                    description: "With a subscription model, drivers have fixed costs, increasing their earnings potential.\n",
                   },
                   {
                     icon: <MapPin className="h-8 w-8 text-blue-600 dark:text-blue-400" />,
@@ -658,19 +661,30 @@ export default function LandingPage() {
               Flow
             </span>
             </motion.div>
-
             <motion.div className="flex gap-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6, duration: 0.5 }}>
-              {["Terms of Service", "Privacy Policy", "Contact Us"].map((item) => (
-                  <motion.div key={item} whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-                    <Link
-                        href={item === "Contact Us" ? "/#Contact" : "#"}
-                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
-                    >
-                      {item}
-                    </Link>
-                  </motion.div>
-              ))}
+            {["Terms of Service", "Privacy Policy", "Contact Us"].map((item) => (
+                <motion.div key={item} whileHover={{ y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                  {item === "Contact Us" ? (
+                      <Link
+                          href="/#Contact"
+                          className="text-sm text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
+                      >
+                        {item}
+                      </Link>
+                  ) : (
+                      <button
+                          onClick={() => setOpenModal(item === "Terms of Service" ? "terms" : "privacy")}
+                          className="text-sm text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
+                      >
+                        {item}
+                      </button>
+                  )}
+                </motion.div>
+            ))}
             </motion.div>
+
+            <LegalModal openModal={openModal} onCloseAction={() => setOpenModal(null)} />
+
 
             <motion.p className="text-sm text-slate-500 dark:text-slate-400" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.5 }}>
               &copy; {new Date().getFullYear()} Flow. All rights reserved.
