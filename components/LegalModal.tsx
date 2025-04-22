@@ -21,7 +21,7 @@ export default function LegalModal({ openModal, onCloseAction }: LegalModalProps
 
                             <div className="space-y-2">
                                 <h2 className="text-xl font-semibold">1. Introduction</h2>
-                                <p>Welcome to [App Name] (&#34;we,&#34; &#34;our,&#34; &#34;us&#34;). Your privacy is important to us, and this Privacy Policy explains how we collect, use, and protect your personal information when using our rideshare platform.</p>
+                                <p>Welcome to <span className="font-semibold">Flow</span> (&#34;we,&#34; &#34;our,&#34; &#34;us&#34;). Your privacy is important to us, and this Privacy Policy explains how we collect, use, and protect your personal information when using our rideshare platform.</p>
                             </div>
 
                             <div className="space-y-2">
@@ -95,7 +95,7 @@ export default function LegalModal({ openModal, onCloseAction }: LegalModalProps
 
                             <div className="space-y-2">
                                 <h2 className="text-xl font-semibold">1. Introduction</h2>
-                                <p>Welcome to [App Name] (&#34;we,&#34; &#34;our,&#34; &#34;us&#34;). These Terms & Conditions (&#34;Terms&#34;) govern your use of our ride share platform, which connects independent contractor drivers (&#34;Drivers&#34;) with riders (&#34;Riders&#34;). By accessing or using our app, you agree to comply with these Terms. If you do not agree, please do not use the service.</p>
+                                <p>Welcome to <span className="font-semibold">Flow</span> (&#34;we,&#34; &#34;our,&#34; &#34;us&#34;). These Terms & Conditions (&#34;Terms&#34;) govern your use of our ride share platform, which connects independent contractor drivers (&#34;Drivers&#34;) with riders (&#34;Riders&#34;). By accessing or using our app, you agree to comply with these Terms. If you do not agree, please do not use the service.</p>
                             </div>
 
                             <div className="space-y-2">
