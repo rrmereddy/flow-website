@@ -87,7 +87,7 @@ export default function LegalModal({ openModal, onCloseAction }: LegalModalProps
 
                             <div className="space-y-2">
                                 <h2 className="text-xl font-semibold">10. Contact Information</h2>
-                                <p>For questions regarding this Privacy Policy, please contact us at [support@email.com].</p>
+                                <p>For questions regarding this Privacy Policy, please contact us at [Team@roamwithflow.com].</p>
                             </div>
                         </div>
                     ) : (
@@ -182,7 +182,7 @@ export default function LegalModal({ openModal, onCloseAction }: LegalModalProps
 
                             <div className="space-y-2">
                                 <h2 className="text-xl font-semibold">12. Contact Information</h2>
-                                <p>For any questions regarding these Terms, please contact us at [support@email.com].</p>
+                                <p>For any questions regarding these Terms, please contact us at [Team@roamwithflow.com].</p>
                             </div>
                         </div>
                     )}
