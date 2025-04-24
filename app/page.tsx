@@ -486,13 +486,9 @@ export default function LandingPage() {
 
                 <motion.div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
                   {[
-                    { name: "Justin Le", link: "https://www.linkedin.com/in/justindtle/",title: "Lead Backend Developer"},
-                    { name: "Moulik Mishra", link: "https://www.linkedin.com/in/moulik-mishra-014b801a6/", title: "CEO"},
-                    {
-                      name: "Ritin Mereddy",
-                      title: "Lead Frontend Developer",
-                      link: "https://www.linkedin.com/in/ritinm/",
-                    },
+                    { name: "Justin Le", link: "https://www.linkedin.com/in/justindtle/",title: "Lead Backend Developer", image: "/Justin.jpg"},
+                    { name: "Moulik Mishra", link: "https://www.linkedin.com/in/moulik-mishra-014b801a6/", title: "CEO", image: "/Moulik.jpg"},
+                    { name: "Ritin Mereddy", title: "Lead Frontend Developer", link: "https://www.linkedin.com/in/ritinm/", image: "/Ritin.jpg",},
                   ].map((founder, index) => (
                       <motion.div
                           key={index}
@@ -510,11 +506,12 @@ export default function LandingPage() {
                             <Link href={founder.link} legacyBehavior>
                               <a target="_blank" rel="noopener noreferrer">
                                 <Image
-                                    src={`/${founder.name.split(" ")[0]}.jpg`}
-                                    width={128}
-                                    height={128}
+                                    src={`${founder.image}`}
                                     alt={`${founder.name}`}
+                                    width={256}
+                                    height={256}
                                     className="object-cover w-full h-full"
+                                    priority={index < 2}  // Prioritize loading the first two images
                                 />
                               </a>
                             </Link>
@@ -528,7 +525,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div className="flex justify-center mt-12" variants={fadeInUpVariants}>
-                <Link href="/#Contact">
+                <Link href="/auth/signup">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                     <ShinyButton
                       className="border-1 border-black dark:border-white"
