@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const firebaseUser = userCredential.user
 
 
-      if (role === "user" || role === "admin") {
+      if (role === "user" || role === "admin" || role === "driver") {
         await setDoc(doc(db, "users", firebaseUser.uid), {
           email,
           firstName,
@@ -91,16 +91,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           //accountStatus: "not verified",
           createdAt: new Date().toISOString(),
         })
-      } else if (role === "driver") {
-        await setDoc(doc(db, "drivers", firebaseUser.uid), {
-          email,
-          firstName,
-          lastName,
-          role,
-          //accountStatus: "not verified",
-          createdAt: new Date().toISOString(),
-        })
-      } else {
+      }
+      else {
         toast.error("Invalid role selected")
         new Error("Invalid role selected")
       }
@@ -122,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true)
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      
+      console.log(userCredential.user)
       if (!userCredential.user.emailVerified) {
         await signOut(auth)
         await sendEmailVerification(userCredential.user)
