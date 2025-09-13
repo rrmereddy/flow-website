@@ -12,7 +12,7 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
 } from "firebase/auth"
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
 
@@ -89,12 +89,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           lastName,
           role,
           //accountStatus: "not verified",
-          createdAt: new Date().toISOString(),
+          createdAt: serverTimestamp(),
         })
       }
       else {
         toast.error("Invalid role selected")
-        new Error("Invalid role selected")
+        throw new Error("Invalid role selected")
       }
 
       await sendEmailVerification(firebaseUser, {
@@ -115,10 +115,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true)
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       console.log(userCredential.user)
+      
+      // Check email verification BEFORE accessing Firestore
       if (!userCredential.user.emailVerified) {
         await signOut(auth)
         await sendEmailVerification(userCredential.user)
-        new Error("auth/email-not-verified")
+        throw new Error("auth/email-not-verified")
       }
 
       // Get user data and handle routing here
@@ -140,7 +142,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           router.push("/auth/waitlist")
         }
       } else {
-        new Error("User not found")
+        throw new Error("User not found")
         //throw new Error("User data not found")
       }
     } catch (error) {
