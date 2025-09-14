@@ -15,6 +15,7 @@ import {
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
+import { logger } from "./logger"
 
 // Define user types
 export type UserRole = "admin" | "driver" | "user"
@@ -63,7 +64,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             toast.error("User not found")
           }
         } catch (error) {
-          console.error("Error fetching user data:", error)
+          logger.error("Error fetching user data:", error)
           setUser(null)
         }
       } else {
@@ -103,7 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       toast.success("Verification email sent. Please check your inbox.")
       router.push("/auth/login")
     } catch (error) {
-      console.error("Error signing up:", error)
+      logger.error("Error signing up:", error)
       throw error
     } finally {
       setLoading(false)
@@ -114,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true)
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      console.log(userCredential.user)
+      logger.log(userCredential.user)
       
       // Check email verification BEFORE accessing Firestore
       if (!userCredential.user.emailVerified) {
@@ -158,7 +159,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await signOut(auth)
       router.push("/")
     } catch (error) {
-      console.error("Error logging out:", error)
+      logger.error("Error logging out:", error)
       throw error
     } finally {
       setLoading(false)
@@ -170,7 +171,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       await sendPasswordResetEmail(auth, email)
       toast.success("Password reset email sent. Please check your inbox.")
     } catch (error) {
-      console.error("Error sending password reset email:", error)
+      logger.error("Error sending password reset email:", error)
       throw error
     }
   }

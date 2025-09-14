@@ -13,6 +13,7 @@ import {ShineBorder} from "@/components/magicui/shine-border";
 import Image from "next/image"
 import {motion} from "framer-motion";
 import ErrorToast from "@/components/error-toast";
+import { logger } from "@/lib/logger";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -31,7 +32,7 @@ export default function LoginPage() {
       })
     } catch (error) {
       ErrorToast(error)
-      console.error("Login error:", error)
+      logger.error("Login error:", error)
     } finally {
       setIsLoading(false)
     }
