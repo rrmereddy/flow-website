@@ -1,6 +1,5 @@
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
-import { log } from "console";
 
 export default function ErrorToast(toastError: unknown) {
     let errorCode = "unknown";

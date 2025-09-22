@@ -636,7 +636,7 @@ export default function LandingPage() {
 
               <motion.div className="mt-12 text-center" variants={fadeInUpVariants}>
                 <p className="text-slate-600 dark:text-slate-300 mb-4">
-                  Questions about pricing? We're here to help.
+                  Questions about pricing? We&apos;re here to help.
                 </p>
                 <Link href="/#Contact">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
