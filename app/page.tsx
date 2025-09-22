@@ -700,7 +700,7 @@ export default function LandingPage() {
                 <motion.div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2 max-w-6xl mx-auto" variants={staggerContainerVariants}>
                   {[
                     { name: "Moulik Mishra", link: "https://www.linkedin.com/in/moulik-mishra-014b801a6/", title: "CEO", image: "/Moulik.jpg"},
-                    { name: "Daniel Kim", title: "CMO", link: "https://www.linkedin.com/in/daniel-kim-13397b264/", image: "/Daniel.jpg",},
+                    { name: "Daniel Kim", title: "CMO", link: "https://www.linkedin.com/in/danielhjkim/", image: "/Daniel.jpeg"},
                     { name: "Justin Le", link: "https://www.linkedin.com/in/justindtle/",title: "Software Developer", image: "/Justin.jpg"},
                     { name: "Ritin Mereddy", title: "Software Developer", link: "https://www.linkedin.com/in/ritinm/", image: "/Ritin.jpg",}
                   ].map((founder, index) => (
