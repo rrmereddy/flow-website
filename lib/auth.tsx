@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       await sendEmailVerification(firebaseUser, {
-        url: `${window.location.origin}/auth/verify-email`,
+        url: `${window.location.origin}/auth/login`,
       })
       toast.success("Verification email sent. Please check your inbox.")
       router.push("/auth/login")

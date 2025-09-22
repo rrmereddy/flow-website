@@ -1,5 +1,6 @@
 import { toast } from "sonner";
 import { logger } from "@/lib/logger";
+import { log } from "console";
 
 export default function ErrorToast(toastError: unknown) {
     let errorCode = "unknown";
@@ -22,6 +23,7 @@ export default function ErrorToast(toastError: unknown) {
     } else {
         errorCode = String(toastError);
     }
+    logger.log("Determined error code:", errorCode);
 
     switch (errorCode) {
         case "auth/email-already-in-use":

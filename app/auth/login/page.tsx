@@ -14,6 +14,8 @@ import Image from "next/image"
 import {motion} from "framer-motion";
 import ErrorToast from "@/components/error-toast";
 import { logger } from "@/lib/logger";
+import { sendEmailVerification } from "firebase/auth"
+import { auth } from "@/lib/firebase"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -32,6 +34,13 @@ export default function LoginPage() {
       })
     } catch (error) {
       ErrorToast(error)
+      if (error instanceof Error) {
+        if (error.message.includes("email not verified")) {
+          if (auth.currentUser) {
+            await sendEmailVerification(auth.currentUser)
+          }
+        }
+      }
       logger.error("Login error:", error)
     } finally {
       setIsLoading(false)
