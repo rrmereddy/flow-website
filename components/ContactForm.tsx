@@ -15,7 +15,7 @@ interface FormData {
     email: string;
     phone: string;
     reason: string;
-    message: string;
+    comments: string;
     [key: string]: string; // Index signature to allow formData[field.id]
 }
 
@@ -31,7 +31,7 @@ const ContactForm = () => {
         email: "",
         phone: "",
         reason: "",
-        message: "",
+        comments: "",
     });
 
 
@@ -97,7 +97,7 @@ const ContactForm = () => {
             // Write document to "contact_requests" collection in Firestore.
             await addDoc(collection(db, "contact_requests"), formData);
             toast.success("Form submitted successfully!", {
-                description: "You will hear back from us soon!",
+                description: "Thank you for contacting us!",
             })
             // Optionally clear form fields
             setFormData({
@@ -105,12 +105,12 @@ const ContactForm = () => {
                 email: "",
                 phone: "",
                 reason: "",
-                message: "",
+                comments: "",
             });
         } catch (error) {
             console.error("Error adding document: ", error);
             toast.error("Error submitting form", {
-                description: "Please try again.",
+                description: "Please try again later.",
             })
         }
     };
@@ -217,17 +217,17 @@ const ContactForm = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.6, duration: 0.5 }}
                 >
-                    <Label htmlFor="message" className="text-blue-600 dark:text-blue-400">
+                    <Label htmlFor="comments" className="text-blue-600 dark:text-blue-400">
                         Comments
                     </Label>
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                         <Textarea
-                            id="message"
-                            name="message"
-                            placeholder="Your message"
+                            id="comments"
+                            name="comments"
+                            placeholder="Your Comments..."
                             onChange={handleChange}
                             autoComplete="off"
-                            value={formData.message}
+                            value={formData.comments}
                             className="min-h-[120px] border-blue-200 focus:border-blue-400 focus:ring-blue-400 dark:border-blue-800 dark:bg-gray-800 dark:text-white dark:focus:border-blue-600 dark:focus:ring-blue-600"
                         />
                     </motion.div>

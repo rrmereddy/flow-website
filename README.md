@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Flow - Revolutionizing Transportation in Bryan/College Station
 
-## Getting Started
+<div align="center">
+  <img src="public/logo.png" alt="Flow Logo" width="120" height="120">
+  
+  **Travel Your Way. Every Day.**
+</div>
 
-First, run the development server:
+## 🚗 About Flow
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Flow is a next-generation ride-sharing platform designed specifically for the Bryan/College Station community. We're revolutionizing transportation by prioritizing driver welfare, transparent pricing, and exceptional user experience.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Our Mission
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+At Flow, our mission is to make transportation seamless, safe, and accessible while empowering drivers with greater flexibility and earning potential. We strive to create a driver-first platform where our partners have the tools, support, and fair compensation they deserve.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+By prioritizing safety, community, and innovation, we connect riders with reliable drivers, ensuring affordability and trust in every ride. Flow isn't just about getting from point A to B – it's about building a transportation network that values and uplifts the people who make it possible.
 
-## Learn More
+## 🌟 What Makes Flow Different
 
-To learn more about Next.js, take a look at the following resources:
+### 💰 Transparent Pricing Model
+Our transparent pricing model allows drivers to better understand their earning potential, ensuring they know exactly what they'll earn from each ride.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 📱 Subscription-Driven Platform
+With our innovative subscription model, drivers have fixed costs instead of percentage-based fees, dramatically increasing their earnings potential.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 🏪 Driver-First Marketplace
+Through our marketplace approach, we return pricing power to the people, letting demand and supply naturally determine fair rates.
 
-## Deploy on Vercel
+## 👥 Founding Team
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Moulik Mishra - CEO
+*Visionary leader driving Flow's mission to transform transportation*
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Justin Le - Lead Backend Developer  
+*Architecting the robust technical foundation that powers our platform*
+
+### Ritin Mereddy - Lead Frontend Developer
+*Creating the beautiful, intuitive user experiences that define Flow*
+
+## 🎯 Our Vision
+
+We believe in seamless, efficient, and reliable transportation. Founded with the vision of redefining ride sharing in Bryan/College Station, we're committed to providing a safe and affordable way to get around town.
+
+Our platform connects riders with independent drivers who meet strict safety and reliability standards. Whether you're heading to class, work, or a night out, Flow ensures you get there with ease.
+
+Driven by innovation and a passion for community, we're here to make every ride simple, stress-free, and accessible. Welcome to a new era of transportation – welcome to Flow.
+
+## 🛠️ Technology Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS with custom animations
+- **UI Components**: Radix UI primitives with custom styling
+- **Animations**: Framer Motion for smooth, engaging interactions
+- **Authentication**: Firebase integration
+- **Deployment**: Vercel platform
+- **Performance**: Optimized with Vercel Analytics and Speed Insights
+
+## 🚀 Features
+
+- **Real-time Ride Tracking**: Live updates on driver location and ETA
+- **Secure Payments**: Safe, encrypted payment processing
+- **Driver Verification**: Comprehensive background checks and vehicle inspections
+- **Transparent Pricing**: No hidden fees or surprise charges
+- **Community Focus**: Built specifically for Bryan/College Station residents
+- **Responsive Design**: Seamless experience across all devices
+- **Dark Mode Support**: Comfortable viewing in any lighting condition
+
+## 📱 User Experience
+
+Flow offers a modern, intuitive interface designed with both riders and drivers in mind:
+
+- **For Riders**: Easy booking, real-time tracking, secure payments, and reliable service
+- **For Drivers**: Flexible scheduling, transparent earnings, community support, and fair compensation
+
+## 🌐 Community Impact
+
+Flow is more than just a ride-sharing app – we're building a community. By focusing on the Bryan/College Station area, we understand local needs and can provide tailored solutions that benefit everyone in our community.
+
+## 📞 Get in Touch
+
+Ready to experience the future of transportation? Join the Flow community today!
+
+- **Website**: [Flow Platform](https://roamwithflow.com/)
+- **Contact**: Reach out through our website contact form
+- **Social**: Follow us for updates and community news
+
+---
+
+<div align="center">
+  <strong>© 2024 Flow. All rights reserved.</strong><br>
+  <em>Travel Your Way. Every Day.</em>
+</div>

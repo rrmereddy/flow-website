@@ -1,17 +1,28 @@
 import { toast } from "sonner";
+import { logger } from "@/lib/logger";
 
 export default function ErrorToast(toastError: unknown) {
     let errorCode = "unknown";
-
+    logger.log(toastError);
     if (toastError instanceof Error) {
-        // Firebase errors usually look like: "Firebase: Error (auth/email-already-in-use)."
-        const match = toastError.message.match(/\((.*?)\)/);
-        if (match && match[1]) {
-            errorCode = match[1];
+        logger.log("instanceof Error");
+        // Check if it's a Firebase error with parentheses: "Firebase: Error (auth/email-already-in-use)."
+        const firebaseMatch = toastError.message.match(/\((.*?)\)/);
+        if (firebaseMatch && firebaseMatch[1]) {
+            errorCode = firebaseMatch[1];
+        } else {
+            // Check if it's a direct error code like "auth/email-not-verified"
+            const directMatch = toastError.message.match(/^(auth\/[a-z-]+)$/);
+            if (directMatch && directMatch[1]) {
+                errorCode = directMatch[1];
+            } else {
+                errorCode = toastError.message;
+            }
         }
     } else {
         errorCode = String(toastError);
     }
+    logger.log("Determined error code:", errorCode);
 
     switch (errorCode) {
         case "auth/email-already-in-use":

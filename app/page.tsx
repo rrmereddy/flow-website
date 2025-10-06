@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowRight, Clock, MapPin, Shield } from "lucide-react"
+import { ArrowRight, Clock, MapPin, Shield, Check, DollarSign, Calendar, Percent } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { motion, useScroll, useTransform, useInView } from "framer-motion"
@@ -24,6 +24,7 @@ export default function LandingPage() {
   // Refs for scroll animations
   const missionRef = useRef(null)
   const featuresRef = useRef(null)
+  const pricingRef = useRef(null)
   const aboutRef = useRef(null)
   const faqRef = useRef(null)
   const contactRef = useRef(null)
@@ -31,6 +32,7 @@ export default function LandingPage() {
   // InView states
   const missionInView = useInView(missionRef, { once: true, amount: 0.3 })
   const featuresInView = useInView(featuresRef, { once: true, amount: 0.3 })
+  const pricingInView = useInView(pricingRef, { once: true, amount: 0.3 })
   const aboutInView = useInView(aboutRef, { once: true, amount: 0.3 })
   const faqInView = useInView(faqRef, { once: true, amount: 0.3 })
   const contactInView = useInView(contactRef, { once: true, amount: 0.3 })
@@ -126,7 +128,7 @@ export default function LandingPage() {
             </motion.div>
 
             <nav className="hidden md:flex gap-6">
-              {["Mission", "Features", "About", "FAQ", "Contact"].map((item, index) => (
+              {["Mission", "Features", "Pricing", "About", "FAQ", "Contact"].map((item, index) => (
                   <motion.div
                       key={item}
                       initial={{ opacity: 0, y: -10 }}
@@ -425,13 +427,224 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div className="flex justify-center mt-8" variants={fadeInUpVariants}>
-                <Link href="/#Contact">
+                <Link href="/#Pricing">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                     <Button
                         size="lg"
                         className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
                     >
-                      Get in Touch
+                      Checkout Pricing
+                    </Button>
+                  </motion.div>
+                </Link>
+              </motion.div>
+            </div>
+          </motion.section>
+
+          {/* Pricing Section */}
+          <motion.section
+              id="Pricing"
+              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
+              ref={pricingRef}
+              initial="hidden"
+              animate={pricingInView ? "visible" : "hidden"}
+              variants={containerVariants}
+          >
+            <div className="container px-4 md:px-6 mx-auto">
+              <motion.div className="flex flex-col items-center justify-center space-y-4 text-center" variants={itemVariants}>
+                <div className="space-y-2">
+                  <motion.div
+                      className="inline-block rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 px-3 py-1 text-sm text-white dark:from-blue-600 dark:to-purple-600"
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      variants={itemVariants}
+                  >
+                    Pricing
+                  </motion.div>
+                  <motion.h2
+                      className="text-3xl font-bold tracking-tighter md:text-4xl/tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
+                      variants={itemVariants}
+                  >
+                    Simple, Transparent Pricing
+                  </motion.h2>
+                  <motion.p className="text-slate-600 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-slate-300" variants={itemVariants}>
+                    Choose the plan that works best for you. Riders always ride free.
+                  </motion.p>
+                </div>
+              </motion.div>
+
+              {/* Riders Free Notice */}
+              <motion.div 
+                  className="mt-8 mb-12 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950 rounded-xl border border-green-200 dark:border-green-800"
+                  variants={fadeInUpVariants}
+              >
+                <div className="flex items-center justify-center space-x-3">
+                  <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
+                  <h3 className="text-xl font-bold text-green-800 dark:text-green-200">For Riders: Always Free</h3>
+                </div>
+                <p className="text-center mt-2 text-green-700 dark:text-green-300">
+                  No subscription fees, no hidden costs. Just pay for your rides at competitive rates.
+                </p>
+              </motion.div>
+
+              {/* Driver Pricing Cards */}
+              <motion.div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
+                {[
+                  {
+                    name: "Monthly",
+                    price: "$30",
+                    period: "per month",
+                    icon: <Calendar className="h-8 w-8" />,
+                    description: "Perfect for regular drivers",
+                    features: [
+                      "No commissions on any rides",
+                      "Keep 100% of your earnings",
+                      "Flexible monthly billing",
+                      "Cancel anytime"
+                    ],
+                    popular: false,
+                    color: "blue"
+                  },
+                  {
+                    name: "Yearly",
+                    price: "$300",
+                    period: "per year",
+                    icon: <DollarSign className="h-8 w-8" />,
+                    description: "Best value for committed drivers",
+                    features: [
+                      "Save $60 compared to monthly",
+                      "No commissions on any rides",
+                      "Keep 100% of your earnings",
+                      "Annual billing discount"
+                    ],
+                    popular: true,
+                    color: "purple"
+                  },
+                  {
+                    name: "Commission",
+                    price: "$40",
+                    period: "per month",
+                    icon: <Percent className="h-8 w-8" />,
+                    description: "Commission-based pricing",
+                    features: [
+                      "20% commission until $40/month",
+                      "No commission after $40/month",
+                      "No monthly fees",
+                      "Perfect for part-time drivers"
+                    ],
+                    popular: false,
+                    color: "green"
+                  }
+                ].map((plan, index) => (
+                    <motion.div
+                        key={index}
+                        className={`relative p-8 rounded-2xl border-2 transition-all duration-300 ${
+                            plan.popular
+                                ? "border-purple-300 dark:border-purple-600 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950 dark:to-blue-950 scale-105"
+                                : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+                        }`}
+                        whileHover="hover"
+                        custom={index}
+                    >
+                      {plan.popular && (
+                          <motion.div
+                              className="absolute -top-4 left-1/2 transform -translate-x-1/2"
+                              initial={{ opacity: 0, y: -10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.5 }}
+                          >
+                            <span className="bg-gradient-to-r from-purple-500 to-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                              Most Popular
+                            </span>
+                          </motion.div>
+                      )}
+
+                      <div className="text-center mb-6">
+                        <motion.div
+                            className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full mb-4 ${
+                                plan.color === "blue"
+                                    ? "bg-gradient-to-r from-blue-400/20 to-blue-500/20 dark:from-blue-500/30 dark:to-blue-600/30"
+                                    : plan.color === "purple"
+                                    ? "bg-gradient-to-r from-purple-400/20 to-purple-500/20 dark:from-purple-500/30 dark:to-purple-600/30"
+                                    : "bg-gradient-to-r from-green-400/20 to-green-500/20 dark:from-green-500/30 dark:to-green-600/30"
+                            }`}
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        >
+                          {plan.icon}
+                        </motion.div>
+                        <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
+                        <div className="mb-2">
+                          <span className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
+                            {plan.price}
+                          </span>
+                          <span className="text-slate-600 dark:text-slate-300 ml-1">
+                            {plan.name === "Commission" ? (
+                              <>
+                                per month<sup className="text-xs">*</sup>
+                              </>
+                            ) : (
+                              plan.period
+                            )}
+                          </span>
+                        </div>
+                        <p className="text-slate-600 dark:text-slate-300">{plan.description}</p>
+                      </div>
+
+                      <ul className="space-y-3 mb-8">
+                        {plan.features.map((feature, featureIndex) => (
+                            <motion.li
+                                key={featureIndex}
+                                className="flex items-center space-x-3"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: 0.1 * featureIndex }}
+                            >
+                              <Check className="h-5 w-5 text-green-500 dark:text-green-400 flex-shrink-0" />
+                              <span className="text-slate-600 dark:text-slate-300">{feature}</span>
+                            </motion.li>
+                        ))}
+                      </ul>
+
+                      <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                      >
+                        <Link href="/auth/signup?role=driver">
+                          <Button
+                              className={`w-full ${
+                                  plan.popular
+                                      ? "bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 dark:from-purple-600 dark:to-blue-600 dark:hover:from-purple-700 dark:hover:to-blue-700"
+                                      : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 dark:from-blue-600 dark:to-purple-600 dark:hover:from-blue-700 dark:hover:to-purple-700"
+                              }`}
+                          >
+                            Choose {plan.name}
+                          </Button>
+                        </Link>
+                      </motion.div>
+                    </motion.div>
+                ))}
+              </motion.div>
+
+              {/* Commission Footnote */}
+              <motion.div className="mt-8 text-center" variants={fadeInUpVariants}>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  *Commission plan: 20% commission on rides until you reach $40 in monthly commission payments, then 0% commission for the rest of the month.
+                </p>
+              </motion.div>
+
+              <motion.div className="mt-12 text-center" variants={fadeInUpVariants}>
+                <p className="text-slate-600 dark:text-slate-300 mb-4">
+                  Questions about pricing? We&apos;re here to help.
+                </p>
+                <Link href="/#Contact">
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                    <Button
+                        variant="outline"
+                        className="border-blue-300 text-blue-600 hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-950"
+                    >
+                      Contact Us
                     </Button>
                   </motion.div>
                 </Link>
@@ -442,7 +655,7 @@ export default function LandingPage() {
           {/* About Us Section */}
           <motion.section
               id="About"
-              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
+              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={aboutRef}
               initial="hidden"
               animate={aboutInView ? "visible" : "hidden"}
@@ -484,15 +697,12 @@ export default function LandingPage() {
                   Our Founders
                 </motion.h3>
 
-                <motion.div className="grid gap-8 md:grid-cols-1 lg:grid-cols-3 max-w-6xl mx-auto" variants={staggerContainerVariants}>
+                <motion.div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2 max-w-6xl mx-auto" variants={staggerContainerVariants}>
                   {[
-                    { name: "Justin Le", link: "https://www.linkedin.com/in/justindtle/",title: "Lead Backend Developer"},
-                    { name: "Moulik Mishra", link: "https://www.linkedin.com/in/moulik-mishra-014b801a6/", title: "CEO"},
-                    {
-                      name: "Ritin Mereddy",
-                      title: "Lead Frontend Developer",
-                      link: "https://www.linkedin.com/in/ritinm/",
-                    },
+                    { name: "Moulik Mishra", link: "https://www.linkedin.com/in/moulik-mishra-014b801a6/", title: "CEO", image: "/Moulik.jpg"},
+                    { name: "Daniel Kim", title: "CMO", link: "https://www.linkedin.com/in/danielhjkim/", image: "/Daniel.jpeg"},
+                    { name: "Justin Le", link: "https://www.linkedin.com/in/justindtle/",title: "Software Developer", image: "/Justin.jpg"},
+                    { name: "Ritin Mereddy", title: "Software Developer", link: "https://www.linkedin.com/in/ritinm/", image: "/Ritin.jpg",}
                   ].map((founder, index) => (
                       <motion.div
                           key={index}
@@ -510,11 +720,12 @@ export default function LandingPage() {
                             <Link href={founder.link} legacyBehavior>
                               <a target="_blank" rel="noopener noreferrer">
                                 <Image
-                                    src={`/${founder.name.split(" ")[0]}.jpg`}
-                                    width={128}
-                                    height={128}
+                                    src={`${founder.image}`}
                                     alt={`${founder.name}`}
+                                    width={256}
+                                    height={256}
                                     className="object-cover w-full h-full"
+                                    priority={index < 2}  // Prioritize loading the first two images
                                 />
                               </a>
                             </Link>
@@ -528,7 +739,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div className="flex justify-center mt-12" variants={fadeInUpVariants}>
-                <Link href="/#Contact">
+                <Link href="/auth/signup">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
                     <ShinyButton
                       className="border-1 border-black dark:border-white"
@@ -548,7 +759,7 @@ export default function LandingPage() {
           {/* FAQ Section */}
           <motion.section
               id="FAQ"
-              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
+              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
               ref={faqRef}
               initial="hidden"
               animate={faqInView ? "visible" : "hidden"}
@@ -620,7 +831,7 @@ export default function LandingPage() {
           {/* Contact Form Section */}
           <motion.section
               id="Contact"
-              className="w-full py-12 md:py-24 lg:py-32 bg-white dark:bg-gray-900"
+              className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950"
               ref={contactRef}
               initial="hidden"
               animate={contactInView ? "visible" : "hidden"}
