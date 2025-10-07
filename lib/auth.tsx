@@ -31,7 +31,7 @@ export type User = {
 type AuthContextType = {
   user: User | null
   loading: boolean
-  signup: (email: string, password: string, firstName: string, lastName: string, role: UserRole) => Promise<void>
+  signup: (email: string, password: string, firstName: string, lastName: string, role: UserRole, referralCode?: string) => Promise<void>
   login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
   forgotPassword: (email: string) => Promise<void>
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe()
   }, [])  // Removed router dependency
 
-  const signup = async (email: string, password: string, firstName: string, lastName: string, role: UserRole) => {
+  const signup = async (email: string, password: string, firstName: string, lastName: string, role: UserRole, referralCode?: string) => {
     try {
       setLoading(true)
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
@@ -94,7 +94,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 
       if (role === "user" || role === "admin" || role === "driver") {
-        await setDoc(doc(db, "users", firebaseUser.uid), {
+        const userData: any = {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           emailAddress: email.toLowerCase().trim(),
@@ -104,7 +104,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           profilePictureURL: "",
           createdAt: serverTimestamp(),
           role: role,
-      });
+        };
+
+        // Add referral code if provided and user is a regular user
+        if (referralCode && referralCode.trim() && role === "user") {
+          userData.referralCode = referralCode.trim();
+        }
+
+        await setDoc(doc(db, "users", firebaseUser.uid), userData);
       }
       else {
         toast.error("Invalid role selected")
