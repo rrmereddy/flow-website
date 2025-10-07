@@ -16,26 +16,8 @@ import { doc, getDoc, setDoc, serverTimestamp, updateDoc } from "firebase/firest
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
 import { logger } from "./logger"
+import { AuthContextType, User, UserRole, SignupUser } from "@/types/authTypes"
 
-// Define user types
-export type UserRole = "admin" | "driver" | "user"
-
-export type User = {
-  uid: string
-  email: string | null
-  firstName: string | null
-  lastName: string | null
-  role: UserRole
-}
-
-type AuthContextType = {
-  user: User | null
-  loading: boolean
-  signup: (email: string, password: string, firstName: string, lastName: string, role: UserRole, referralCode?: string) => Promise<void>
-  login: (email: string, password: string) => Promise<void>
-  logout: () => Promise<void>
-  forgotPassword: (email: string) => Promise<void>
-}
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
@@ -65,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             
             setUser({
               uid: firebaseUser.uid,
-              email: firebaseUser.email,
+              emailAddress: firebaseUser.email || "",
               firstName: userData.firstName || null,
               lastName: userData.lastName || null,
               role: userRole,
@@ -94,7 +76,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 
       if (role === "user" || role === "admin" || role === "driver") {
-        const userData: any = {
+        const userData: SignupUser = {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           emailAddress: email.toLowerCase().trim(),

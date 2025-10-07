@@ -1,10 +1,4 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-
-interface LegalSection {
-    heading: string;
-    content: string;
-}
-
 interface LegalModalProps {
     openModal: "terms" | "privacy" | null;
     onCloseAction: () => void;
@@ -38,7 +32,7 @@ export default function LegalModal({ openModal, onCloseAction }: LegalModalProps
         { heading: "9. Changes to This Policy", content: "We may update this Privacy Policy. Continued use of the app after changes means acceptance of the new policy." },
         { heading: "10. Contact Information", content: "For questions regarding this Privacy Policy, please contact us at [team@roamwithflow.com]." }
       ];
-      
+
     return (
         <Dialog open={!!openModal} onOpenChange={onCloseAction}>
             <DialogContent className="max-w-2xl max-h-[90vh]">
