@@ -12,7 +12,7 @@ import {
   sendEmailVerification,
   sendPasswordResetEmail,
 } from "firebase/auth"
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
 import { logger } from "./logger"
@@ -53,6 +53,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (userDoc.exists()) {
             const userData = userDoc.data()
             const userRole = userData.role as UserRole
+            
+            // Update accountStatus to "verified" for all users if it's currently "awaiting verification"
+            if (userRole === "user" && userData.accountStatus === "awaiting verification") {
+              await updateDoc(doc(db, "users", firebaseUser.uid), {
+                accountStatus: "verified",
+                emailVerifiedAt: serverTimestamp()
+              })
+              logger.log("User email verified - updated account status")
+            }
+            
             setUser({
               uid: firebaseUser.uid,
               email: firebaseUser.email,
@@ -85,13 +95,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       if (role === "user" || role === "admin" || role === "driver") {
         await setDoc(doc(db, "users", firebaseUser.uid), {
-          email,
-          firstName,
-          lastName,
-          role,
-          //accountStatus: "not verified",
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          emailAddress: email.toLowerCase().trim(),
+          accountStatus: "awaiting verification",
+          paymentMethods: [],
+          phoneNumber: "",
+          profilePictureURL: "",
           createdAt: serverTimestamp(),
-        })
+          role: role,
+      });
       }
       else {
         toast.error("Invalid role selected")
