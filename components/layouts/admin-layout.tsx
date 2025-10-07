@@ -108,7 +108,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   </div>
                   <div className="grid gap-0.5 text-sm">
                     <div className="font-medium">{user?.firstName + " " + user?.lastName || "Admin User"}</div>
-                    <div className="text-xs text-muted-foreground">{user?.email || "admin@example.com"}</div>
+                    <div className="text-xs text-muted-foreground">{user?.emailAddress || "admin@example.com"}</div>
                   </div>
                   <Button variant="ghost" size="icon" className="ml-auto" onClick={() => logout()}>
                     <LogOut className="h-5 w-5" />
@@ -138,7 +138,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             </div>
             <div className="grid gap-0.5 text-sm">
               <div className="font-medium">{user?.firstName || "Admin User"}</div>
-              <div className="text-xs text-muted-foreground">{user?.email || "admin@example.com"}</div>
+              <div className="text-xs text-muted-foreground">{user?.emailAddress || "admin@example.com"}</div>
             </div>
           </div>
         </div>

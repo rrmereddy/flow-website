@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useAuth, type UserRole } from "@/lib/auth"
+import { useAuth } from "@/lib/auth"
+import { UserRole } from "@/types/authTypes"
 import { ShineBorder } from "@/components/magicui/shine-border";
 import { motion } from "framer-motion";
 import Image from "next/image";
