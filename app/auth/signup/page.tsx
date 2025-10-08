@@ -233,8 +233,9 @@ export default function SignupPage() {
                   checked={termsAccepted}
                   onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
                   required
+                  className="mt-0.5 shrink-0"
                 />
-                <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
+                <Label htmlFor="terms" className="flex flex-wrap text-md leading-relaxed cursor-pointer">
                   I agree to the{" "}
                   <button
                     type="button"
