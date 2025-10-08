@@ -11,8 +11,9 @@ import {
   onAuthStateChanged,
   sendEmailVerification,
   sendPasswordResetEmail,
+  deleteUser,
 } from "firebase/auth"
-import { doc, getDoc, setDoc, serverTimestamp, updateDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp, updateDoc, collection, getDocs, where, query } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
 import { logger } from "./logger"
@@ -73,38 +74,50 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true)
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const firebaseUser = userCredential.user
-
-
-      if (role === "user" || role === "admin" || role === "driver") {
-        const userData: SignupUser = {
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          emailAddress: email.toLowerCase().trim(),
-          accountStatus: "awaiting verification",
-          paymentMethods: [],
-          phoneNumber: "",
-          profilePictureURL: "",
-          createdAt: serverTimestamp(),
-          role: role,
-        };
-
-        // Add referral code if provided and user is a regular user
-        if (referralCode && referralCode.trim() && role === "user") {
-          userData.referralCode = referralCode.trim();
+      logger.log("Firebase user:", firebaseUser)
+      try {
+        if (role === "user" || role === "admin" || role === "driver") {
+          const userData: SignupUser = {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            emailAddress: email.toLowerCase().trim(),
+            accountStatus: "awaiting verification",
+            paymentMethods: [],
+            phoneNumber: "",
+            profilePictureURL: "",
+            createdAt: serverTimestamp(),
+            role: role,
+          };
+          logger.log("User data:", userData)
+          // Add referral code if provided and user is a regular user
+          if (referralCode && referralCode.trim() && role === "user") {
+            if (await validateReferralCode(referralCode.trim().toLowerCase())) {
+              userData.referralCode = referralCode.trim();
+            } else {
+              toast.error("Invalid referral code")
+              throw new Error("Invalid referral code")
+            }
+          }
+          logger.log("User data with referral code:", userData)
+          await setDoc(doc(db, "users", firebaseUser.uid), userData);
+        } else {
+          toast.error("Invalid role selected")
+          throw new Error("Invalid role selected")
         }
-
-        await setDoc(doc(db, "users", firebaseUser.uid), userData);
+        logger.log("Sending email verification")
+        await sendEmailVerification(firebaseUser, {
+          url: `${window.location.origin}/auth/login`,
+        })
+        toast.success("Verification email sent. Please check your inbox.")
+        router.push("/auth/login")
+      } catch (innerError) {
+        try {
+          await deleteUser(firebaseUser)
+        } catch (cleanupError) {
+          logger.error("Failed to rollback created auth user:", cleanupError)
+        }
+        throw innerError
       }
-      else {
-        toast.error("Invalid role selected")
-        throw new Error("Invalid role selected")
-      }
-
-      await sendEmailVerification(firebaseUser, {
-        url: `${window.location.origin}/auth/login`,
-      })
-      toast.success("Verification email sent. Please check your inbox.")
-      router.push("/auth/login")
     } catch (error) {
       logger.error("Error signing up:", error)
       throw error
@@ -183,6 +196,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AuthContext.Provider>
   )
+}
+
+async function validateReferralCode(referralCode: string) {
+  logger.log("[Auth.tsx]Validating referral code:", referralCode)
+  const referralQuery = query(collection(db, "referal_codes"), where("name", "==", referralCode.toLowerCase()))
+  const referralQuerySnapshot = await getDocs(referralQuery)
+  logger.log("Referral query snapshot:", referralQuerySnapshot)
+  return referralQuerySnapshot.docs.length > 0
 }
 
 export function useAuth() {
