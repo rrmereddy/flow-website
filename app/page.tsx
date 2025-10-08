@@ -701,8 +701,8 @@ export default function LandingPage() {
                   {[
                     { name: "Moulik Mishra", link: "https://www.linkedin.com/in/moulik-mishra-014b801a6/", title: "CEO", image: "/Moulik.jpg"},
                     { name: "Daniel Kim", title: "CMO", link: "https://www.linkedin.com/in/danielhjkim/", image: "/Daniel.jpeg"},
-                    { name: "Justin Le", link: "https://www.linkedin.com/in/justindtle/",title: "Software Developer", image: "/Justin.jpg"},
-                    { name: "Ritin Mereddy", title: "Software Developer", link: "https://www.linkedin.com/in/ritinm/", image: "/Ritin.jpg",}
+                    { name: "Ritin Mereddy", title: "CTO", link: "https://www.linkedin.com/in/ritinm/", image: "/Ritin.jpg",},
+                    { name: "Justin Le", link: "https://www.linkedin.com/in/justindtle/",title: "Software Developer", image: "/Justin.jpg"}
                   ].map((founder, index) => (
                       <motion.div
                           key={index}

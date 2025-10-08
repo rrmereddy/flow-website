@@ -11,31 +11,14 @@ import {
   onAuthStateChanged,
   sendEmailVerification,
   sendPasswordResetEmail,
+  deleteUser,
 } from "firebase/auth"
-import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp, updateDoc, collection, getDocs, where, query } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
 import { logger } from "./logger"
+import { AuthContextType, User, UserRole, SignupUser } from "@/types/authTypes"
 
-// Define user types
-export type UserRole = "admin" | "driver" | "user"
-
-export type User = {
-  uid: string
-  email: string | null
-  firstName: string | null
-  lastName: string | null
-  role: UserRole
-}
-
-type AuthContextType = {
-  user: User | null
-  loading: boolean
-  signup: (email: string, password: string, firstName: string, lastName: string, role: UserRole) => Promise<void>
-  login: (email: string, password: string) => Promise<void>
-  logout: () => Promise<void>
-  forgotPassword: (email: string) => Promise<void>
-}
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
@@ -53,9 +36,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (userDoc.exists()) {
             const userData = userDoc.data()
             const userRole = userData.role as UserRole
+            
+            // Update accountStatus to "verified" for all users if it's currently "awaiting verification"
+            if (userRole === "user" && userData.accountStatus === "awaiting verification") {
+              await updateDoc(doc(db, "users", firebaseUser.uid), {
+                accountStatus: "verified",
+                emailVerifiedAt: serverTimestamp()
+              })
+              logger.log("User email verified - updated account status")
+            }
+            
             setUser({
               uid: firebaseUser.uid,
-              email: firebaseUser.email,
+              emailAddress: firebaseUser.email || "",
               firstName: userData.firstName || null,
               lastName: userData.lastName || null,
               role: userRole,
@@ -76,33 +69,56 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe()
   }, [])  // Removed router dependency
 
-  const signup = async (email: string, password: string, firstName: string, lastName: string, role: UserRole) => {
+  const signup = async (email: string, password: string, firstName: string, lastName: string, role: UserRole, referralCode?: string) => {
     try {
       setLoading(true)
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const firebaseUser = userCredential.user
-
-
-      if (role === "user" || role === "admin" || role === "driver") {
-        await setDoc(doc(db, "users", firebaseUser.uid), {
-          email,
-          firstName,
-          lastName,
-          role,
-          //accountStatus: "not verified",
-          createdAt: serverTimestamp(),
+      logger.log("Firebase user:", firebaseUser)
+      try {
+        if (role === "user" || role === "admin" || role === "driver") {
+          const userData: SignupUser = {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            emailAddress: email.toLowerCase().trim(),
+            accountStatus: "awaiting verification",
+            paymentMethods: [],
+            phoneNumber: "",
+            profilePictureURL: "",
+            createdAt: serverTimestamp(),
+            role: role,
+          };
+          logger.log("User data:", userData)
+          // Add referral code if provided and user is a regular user
+          if (referralCode && referralCode.trim() && role === "user") {
+            const processedReferralCode = referralCode.trim().toLowerCase();
+            if (await validateReferralCode(processedReferralCode)) {
+              userData.referralCode = processedReferralCode;
+            } else {
+              toast.error("Invalid referral code")
+              throw new Error("Invalid referral code")
+            }
+          }
+          logger.log("User data with referral code:", userData)
+          await setDoc(doc(db, "users", firebaseUser.uid), userData);
+        } else {
+          toast.error("Invalid role selected")
+          throw new Error("Invalid role selected")
+        }
+        logger.log("Sending email verification")
+        await sendEmailVerification(firebaseUser, {
+          url: `${window.location.origin}/auth/login`,
         })
+        toast.success("Verification email sent. Please check your inbox.")
+        router.push("/auth/login")
+      } catch (innerError) {
+        try {
+          await deleteUser(firebaseUser)
+        } catch (cleanupError) {
+          logger.error("Failed to rollback created auth user:", cleanupError)
+        }
+        throw innerError
       }
-      else {
-        toast.error("Invalid role selected")
-        throw new Error("Invalid role selected")
-      }
-
-      await sendEmailVerification(firebaseUser, {
-        url: `${window.location.origin}/auth/login`,
-      })
-      toast.success("Verification email sent. Please check your inbox.")
-      router.push("/auth/login")
     } catch (error) {
       logger.error("Error signing up:", error)
       throw error
@@ -181,6 +197,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       {children}
     </AuthContext.Provider>
   )
+}
+
+async function validateReferralCode(referralCode: string) {
+  logger.log("[Auth.tsx]Validating referral code:", referralCode)
+  const referralQuery = query(collection(db, "referal_codes"), where("name", "==", referralCode.toLowerCase()))
+  const referralQuerySnapshot = await getDocs(referralQuery)
+  logger.log("Referral query snapshot:", referralQuerySnapshot)
+  return referralQuerySnapshot.docs.length > 0
 }
 
 export function useAuth() {

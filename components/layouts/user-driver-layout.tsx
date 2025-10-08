@@ -135,7 +135,7 @@ export function UserDriverLayout({ children }: UserDriverLayoutProps) {
                   </div>
                   <div className="grid gap-0.5 text-sm">
                     <div className="font-medium">{user?.firstName || (isDriver ? "Driver User" : "Rider User")}</div>
-                    <div className="text-xs text-muted-foreground">{user?.email || "user@example.com"}</div>
+                    <div className="text-xs text-muted-foreground">{user?.emailAddress || "user@example.com"}</div>
                   </div>
                   <Button variant="ghost" size="icon" className="ml-auto" onClick={() => logout()}>
                     <LogOut className="h-5 w-5" />
@@ -165,7 +165,7 @@ export function UserDriverLayout({ children }: UserDriverLayoutProps) {
             </div>
             <div className="grid gap-0.5 text-sm">
               <div className="font-medium">{user?.firstName || (isDriver ? "Driver User" : "Rider User")}</div>
-              <div className="text-xs text-muted-foreground">{user?.email || "user@example.com"}</div>
+              <div className="text-xs text-muted-foreground">{user?.emailAddress || "user@example.com"}</div>
             </div>
           </div>
         </div>
