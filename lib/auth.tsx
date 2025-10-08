@@ -91,8 +91,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           logger.log("User data:", userData)
           // Add referral code if provided and user is a regular user
           if (referralCode && referralCode.trim() && role === "user") {
-            if (await validateReferralCode(referralCode.trim().toLowerCase())) {
-              userData.referralCode = referralCode.trim();
+            const processedReferralCode = referralCode.trim().toLowerCase();
+            if (await validateReferralCode(processedReferralCode)) {
+              userData.referralCode = processedReferralCode;
             } else {
               toast.error("Invalid referral code")
               throw new Error("Invalid referral code")

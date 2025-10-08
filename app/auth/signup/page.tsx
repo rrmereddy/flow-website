@@ -234,7 +234,7 @@ export default function SignupPage() {
                   onCheckedChange={(checked) => setTermsAccepted(checked as boolean)}
                   required
                 />
-                <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer whitespace-nowrap">
+                <Label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
                   I agree to the{" "}
                   <button
                     type="button"
