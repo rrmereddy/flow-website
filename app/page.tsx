@@ -882,9 +882,16 @@ export default function LandingPage() {
                       >
                         {item}
                       </Link>
+                  ) : item === "Privacy Policy" ? (
+                      <Link
+                          href="/privacy"
+                          className="text-sm text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
+                      >
+                        {item}
+                      </Link>
                   ) : (
                       <button
-                          onClick={() => setOpenModal(item === "Terms of Service" ? "terms" : "privacy")}
+                          onClick={() => setOpenModal("terms")}
                           className="text-sm text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
                       >
                         {item}
