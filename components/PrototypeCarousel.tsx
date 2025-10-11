@@ -3,7 +3,7 @@ import { motion, useAnimation } from "framer-motion";
 import Iphone15Pro from "@/components/magicui/iphone-15-pro";
 
 export function PrototypeCarousel() {
-    const images = ["/screen.png", "/Prototype1.png", "/Prototype2.png", "/Prototype3.png", "/Prototype4.png", "/Prototype5.png"];
+    const images = ["/Prototype1.png", "/Prototype2.png", "/Prototype3.png", "/Prototype4.png"];
     const [activeIndex, setActiveIndex] = React.useState(0);
     const [progress, setProgress] = React.useState(0);
     const controls = useAnimation();
@@ -99,7 +99,7 @@ export function PrototypeCarousel() {
             </div>
 
             <p className="text-sm text-gray-500 mt-4 text-center">
-                * Not reflective of actual prices and wait times
+                * Prices are subject to change
             </p>
         </div>
     );
