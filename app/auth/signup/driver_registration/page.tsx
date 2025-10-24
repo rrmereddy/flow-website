@@ -59,7 +59,11 @@ export default function DriverRegistrationPage() {
 
     useEffect(() => {
         const fetchDriverData = async () => {
+            if (loading) {
+                return;
+            }
             if (user) {
+                setDriverLoading(true)
                 try {
                     const driverDoc = await getDoc(doc(db, "drivers", user.uid))
                     if (driverDoc.exists()) {
@@ -78,36 +82,61 @@ export default function DriverRegistrationPage() {
                 } catch (error) {
                     console.error("Error fetching driver data:", error)
                 }
+                finally {
+                    setDriverLoading(false)
+                }
             }
-            setDriverLoading(false)
+            else {
+                setDriverLoading(false)
+            }
         }
         fetchDriverData()
-    }, [user])
+    }, [user, loading])
 
     // Listen for Stripe setup completion from other tabs
     useEffect(() => {
+        // Processing flag to prevent race conditions
+        const PROCESSING_FLAG = 'stripeSetupProcessing'
+        
+        const processStripeCompletion = (stripeData: any) => {
+            // Check if another tab is already processing this
+            if (localStorage.getItem(PROCESSING_FLAG)) {
+                return false // Another tab is handling this
+            }
+            
+            // Set processing flag
+            localStorage.setItem(PROCESSING_FLAG, 'true')
+            
+            try {
+                if (stripeData.success) {
+                    setStripeSetup(prev => ({ 
+                        ...prev, 
+                        onboardingComplete: true,
+                        accountId: stripeData.accountId
+                    }))
+                    setCurrentStep(4)
+                    toast.success("Stripe account setup completed successfully!")
+                } else {
+                    setStripeSetup(prev => ({ ...prev, onboardingComplete: false }))
+                    toast.error("Stripe setup failed. Please try again.")
+                }
+                
+                // Clear both the data and processing flag
+                localStorage.removeItem('stripeSetupComplete')
+                localStorage.removeItem(PROCESSING_FLAG)
+                return true
+            } catch (error) {
+                console.error('Error processing Stripe completion:', error)
+                localStorage.removeItem(PROCESSING_FLAG)
+                return false
+            }
+        }
+
         const handleStorageChange = (e: StorageEvent) => {
             if (e.key === 'stripeSetupComplete') {
                 try {
                     const stripeData = JSON.parse(e.newValue || '{}')
-                    if (stripeData.success) {
-                        setStripeSetup(prev => ({ 
-                            ...prev, 
-                            onboardingComplete: false,
-                            accountId: stripeData.accountId
-                        }))
-                        setCurrentStep(4)
-                        toast.success("Stripe account setup completed successfully!")
-                        
-                        // Clear the localStorage item after handling
-                        localStorage.removeItem('stripeSetupComplete')
-                    } else {
-                        setStripeSetup(prev => ({ ...prev, onboardingComplete: false }))
-                        toast.error("Stripe setup failed. Please try again.")
-                        
-                        // Clear the localStorage item after handling
-                        localStorage.removeItem('stripeSetupComplete')
-                    }
+                    processStripeCompletion(stripeData)
                 } catch (error) {
                     console.error('Error parsing Stripe completion data:', error)
                 }
@@ -120,18 +149,7 @@ export default function DriverRegistrationPage() {
                 const stripeData = localStorage.getItem('stripeSetupComplete')
                 if (stripeData) {
                     const parsedData = JSON.parse(stripeData)
-                    if (parsedData.success) {
-                        setStripeSetup(prev => ({ 
-                            ...prev, 
-                            onboardingComplete: false,
-                            accountId: parsedData.accountId
-                        }))
-                        setCurrentStep(4)
-                        toast.success("Stripe account setup completed successfully!")
-                        
-                        // Clear the localStorage item after handling
-                        localStorage.removeItem('stripeSetupComplete')
-                    }
+                    processStripeCompletion(parsedData)
                 }
             } catch (error) {
                 console.error('Error checking existing Stripe status:', error)
@@ -144,6 +162,8 @@ export default function DriverRegistrationPage() {
 
         return () => {
             window.removeEventListener('storage', handleStorageChange)
+            // Clean up processing flag on unmount
+            localStorage.removeItem(PROCESSING_FLAG)
         }
     }, [])
     

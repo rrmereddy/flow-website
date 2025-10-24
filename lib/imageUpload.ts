@@ -39,6 +39,7 @@
 import { auth, storage, db } from './firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, setDoc } from 'firebase/firestore';
+import { toast } from 'sonner';
 
 /**
  * Image file validation
@@ -149,14 +150,14 @@ export const uploadProfilePicture = async (
 
     const user = auth.currentUser;
     if (!user) {
-        alert("No user found. Please log in.");
+        toast.error("No user found. Please log in.");
         return null;
     }
 
     // Validate file
     const validation = validateImageFile(file);
     if (!validation.isValid) {
-        alert(validation.error);
+        toast.error(validation.error);
         return null;
     }
 
@@ -184,12 +185,12 @@ export const uploadProfilePicture = async (
             }));
         }
 
-        alert('Profile picture updated successfully!');
+        toast.success('Profile picture updated successfully!');
         return downloadURL;
 
     } catch (error) {
         console.error("Error uploading profile picture: ", error);
-        alert('Failed to upload image. Please try again.');
+        toast.error('Failed to upload image. Please try again.');
         return null;
     } finally {
         setUploadingImage(false);
@@ -254,7 +255,7 @@ export const completeImageUploadFlow = async (config: {
 
         const user = auth.currentUser;
         if (!user) {
-            alert("No user found. Please log in.");
+            toast.error("No user found. Please log in.");
             return null;
         }
 
@@ -271,7 +272,7 @@ export const completeImageUploadFlow = async (config: {
 
     } catch (error) {
         console.error('Complete image upload flow error:', error);
-        alert('Failed to upload image. Please try again.');
+        toast.error('Failed to upload image. Please try again.');
         return null;
     }
 };
