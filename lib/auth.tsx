@@ -13,7 +13,7 @@ import {
   sendPasswordResetEmail,
   deleteUser,
 } from "firebase/auth"
-import { doc, getDoc, setDoc, serverTimestamp, updateDoc, collection, getDocs, where, query } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs, where, query, writeBatch } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
 import { logger } from "./logger"
@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser && firebaseUser.emailVerified) {
+      if (firebaseUser) {
         try {
           const userDoc = await getDoc(doc(db, "users", firebaseUser.uid))
 
@@ -38,12 +38,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const userRole = userData.role as UserRole
             
             // Update accountStatus to "verified" for all users if it's currently "awaiting verification"
-            if (userRole === "user" && userData.accountStatus === "awaiting verification") {
-              await updateDoc(doc(db, "users", firebaseUser.uid), {
+            if (userRole === "user" && userData.accountStatus === "awaiting verification" && firebaseUser.emailVerified) {
+              await setDoc(doc(db, "users", firebaseUser.uid), {
                 accountStatus: "verified",
                 emailVerifiedAt: serverTimestamp()
-              })
+              }, { merge: true })
               logger.log("User email verified - updated account status")
+            }
+            if (userRole === "driver" && userData.accountStatus === "awaiting verification" && firebaseUser.emailVerified) {
+                const userRef = doc(db, "users", firebaseUser.uid)
+                const driverRef = doc(db, "drivers", firebaseUser.uid)
+                const batch = writeBatch(db)
+                // Keep users and drivers in sync
+                batch.update(userRef, { accountStatus: "verified", emailVerifiedAt: serverTimestamp() })
+                batch.set(
+                  driverRef,
+                  { checklist: { emailVerified: true }, accountStatus: "verified", emailVerifiedAt: serverTimestamp() },
+                  { merge: true },
+                )
+                await batch.commit()
+                logger.log("Driver email verified — updated user/drivers status and checklist")
             }
             
             setUser({
@@ -105,9 +119,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           toast.error("Invalid role selected")
           throw new Error("Invalid role selected")
         }
+
+        // save driver data
+        if (role === "driver") {
+          // Create driver doc with default/empty values for docs and vehicle
+          await setDoc(doc(db, "drivers", firebaseUser.uid), {
+            firstName: firstName.trim(),
+            lastName: lastName.trim(),
+            emailAddress: email.toLowerCase().trim(),
+            accountStatus: "awaiting verification",
+            paymentMethods: [],
+            phoneNumber: "",
+            profilePictureURL: "",
+            createdAt: serverTimestamp(),
+            driverStatus: "offline",
+            lastOnlineAt: serverTimestamp(),
+            lastLocation: { latitude: 0, longitude: 0 },
+            checklist: {
+                accountInfo: true,
+                emailVerified: false,
+                driverDocs: false,
+                vehicleDocs: false,
+                paymentInfo: false,
+            },
+            vehicle: {} // Vehicle data will be added from VehicleInfoPage
+        });
+        }
         logger.log("Sending email verification")
+
+        // change return URL based on role
+        let emailVerificationUrl = `${window.location.origin}/auth/login`
+        // driver registration page
+        if (role === "driver") {
+          emailVerificationUrl = `${window.location.origin}/auth/signup/driver_registration`
+        }
         await sendEmailVerification(firebaseUser, {
-          url: `${window.location.origin}/auth/login`,
+          url: emailVerificationUrl,
         })
         toast.success("Verification email sent. Please check your inbox.")
         router.push("/auth/login")
@@ -150,14 +197,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (userRole === "admin") {
           router.push("/admin/dashboard")
         } else if (userRole === "driver") {
-          // Use when the app is launched
-          //router.push("/driver/dashboard")
-          router.push("/auth/waitlist")
+          // check whether the driver has completed the registration process
+          const driverDoc = await getDoc(doc(db, "drivers", userCredential.user.uid))
+          if (driverDoc.exists()) {
+            const driverData = driverDoc.data()
+            // the driver has completed the registration process
+            if (driverData.checklist.accountInfo && driverData.checklist.emailVerified && driverData.checklist.driverDocs && driverData.checklist.vehicleDocs && driverData.checklist.paymentInfo) {
+              router.push("/auth/waitlist")
+              toast.success("Login successful", {
+                description: "Welcome back to Flow!",
+              })
+            } else {
+              // the driver has not completed the registration process
+              router.push("/auth/signup/driver_registration")
+              toast.info("Please complete the driver registration process to continue")
+            }
+          } else {
+            // the driver document does not exist
+            router.push("/auth/signup")
+            toast.error("Driver not found", {
+              description: "Please sign up as a driver to continue",
+            })
+          }
         } else {
           // use when the app is launched
           //router.push("/user/dashboard")
           router.push("/auth/waitlist")
+          toast.success("Login successful", {
+            description: "Welcome back to Flow!",
+          })
         }
+
       } else {
         throw new Error("User not found")
         //throw new Error("User data not found")
