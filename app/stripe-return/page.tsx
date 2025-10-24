@@ -92,7 +92,7 @@ export default function StripeReturnPage() {
                 console.error('Error handling Stripe return:', error)
                 localStorage.setItem('stripeSetupComplete', JSON.stringify({
                     success: false,
-                    error: (error as Error)?.message || 'Unknown error',
+                    error: (error as Error).message || 'Unknown error',
                     timestamp: Date.now()
                 }))
                 setStatus('error')
