@@ -492,7 +492,8 @@ export default function LandingPage() {
                 {[
                   {
                     name: "Monthly",
-                    price: "$30",
+                    price: "$10",
+                    originalPrice: "$30",
                     period: "per month",
                     icon: <Calendar className="h-8 w-8" />,
                     description: "Perfect for regular drivers",
@@ -503,7 +504,8 @@ export default function LandingPage() {
                       "Cancel anytime"
                     ],
                     popular: false,
-                    color: "blue"
+                    color: "blue",
+                    discount: true
                   },
                   {
                     name: "Yearly",
@@ -575,10 +577,30 @@ export default function LandingPage() {
                         </motion.div>
                         <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
                         <div className="mb-2">
-                          <span className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
-                            {plan.price}
-                          </span>
-                          <span className="text-slate-600 dark:text-slate-300 ml-1">
+                          {plan.discount ? (
+                            <div className="flex flex-col items-center gap-2">
+                              <div className="flex items-baseline gap-3">
+                                <span className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
+                                  {plan.price}
+                                </span>
+                                <span className="text-2xl text-slate-400 dark:text-slate-500 line-through">
+                                  {plan.originalPrice}
+                                </span>
+                              </div>
+                              <motion.span 
+                                className="text-sm bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-1.5 rounded-full font-bold shadow-lg"
+                                animate={{ scale: [1, 1.05, 1] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                              >
+                                67% OFF
+                              </motion.span>
+                            </div>
+                          ) : (
+                            <span className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400">
+                              {plan.price}
+                            </span>
+                          )}
+                          <span className="text-slate-600 dark:text-slate-300 ml-1 block mt-2">
                             {plan.name === "Commission" ? (
                               <>
                                 per month<sup className="text-xs">*</sup>
@@ -587,9 +609,13 @@ export default function LandingPage() {
                               plan.period
                             )}
                           </span>
+                          {plan.discount && (
+                            <span className="text-xs text-orange-600 dark:text-orange-400 font-medium mt-1 block">
+                              *Discount applies to first month only
+                            </span>
+                          )}
                         </div>
-                        <p className="text-slate-600 dark:text-slate-300">{plan.description}</p>
-                      </div>
+                        </div>
 
                       <ul className="space-y-3 mb-8">
                         {plan.features.map((feature, featureIndex) => (
