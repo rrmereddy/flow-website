@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { doc, getDoc, setDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { toast } from "sonner"
 import {
   Field,
@@ -98,7 +98,14 @@ export default function DriverRegistrationPage() {
         // Processing flag to prevent race conditions
         const PROCESSING_FLAG = 'stripeSetupProcessing'
         
-        const processStripeCompletion = (stripeData: any) => {
+        interface StripeCompletionData {
+            success: boolean;
+            accountId?: string;
+            error?: string;
+            timestamp?: number;
+        }
+        
+        const processStripeCompletion = (stripeData: StripeCompletionData) => {
             // Check if another tab is already processing this
             if (localStorage.getItem(PROCESSING_FLAG)) {
                 return false // Another tab is handling this
@@ -112,7 +119,7 @@ export default function DriverRegistrationPage() {
                     setStripeSetup(prev => ({ 
                         ...prev, 
                         onboardingComplete: true,
-                        accountId: stripeData.accountId
+                        accountId: stripeData.accountId || ''
                     }))
                     setCurrentStep(4)
                     toast.success("Stripe account setup completed successfully!")
@@ -135,7 +142,7 @@ export default function DriverRegistrationPage() {
         const handleStorageChange = (e: StorageEvent) => {
             if (e.key === 'stripeSetupComplete') {
                 try {
-                    const stripeData = JSON.parse(e.newValue || '{}')
+                    const stripeData = JSON.parse(e.newValue || '{}') as StripeCompletionData
                     processStripeCompletion(stripeData)
                 } catch (error) {
                     console.error('Error parsing Stripe completion data:', error)
@@ -148,7 +155,7 @@ export default function DriverRegistrationPage() {
             try {
                 const stripeData = localStorage.getItem('stripeSetupComplete')
                 if (stripeData) {
-                    const parsedData = JSON.parse(stripeData)
+                    const parsedData = JSON.parse(stripeData) as StripeCompletionData
                     processStripeCompletion(parsedData)
                 }
             } catch (error) {
@@ -207,11 +214,11 @@ export default function DriverRegistrationPage() {
 
             // Update the driver's Firestore document
             const driverRef = doc(db, "drivers", user.uid);
-            await setDoc(driverRef, {
+            await updateDoc(driverRef, {
                 licenseImageURL: licenseImageURL,
                 vehicleRegistrationImageURL: vehicleRegistrationImageURL,
                 "checklist.driverDocs": true,
-            }, { merge: true });
+            });
             
             toast.success("Documents uploaded successfully!")
             setCurrentStep(2)
@@ -228,7 +235,7 @@ export default function DriverRegistrationPage() {
         try {
             setDriverLoading(true)
             const driverRef = doc(db, "drivers", user.uid);
-            await setDoc(driverRef, {
+            await updateDoc(driverRef, {
                 "checklist.vehicleDocs": true,
                 vehicle: {
                     make: vehicleInfo.make,
@@ -237,7 +244,7 @@ export default function DriverRegistrationPage() {
                     color: vehicleInfo.color,
                     licensePlate: vehicleInfo.licensePlate
                 }
-            }, { merge: true })
+            })
             
             toast.success("Vehicle information saved!")
             setCurrentStep(3)
@@ -331,7 +338,7 @@ export default function DriverRegistrationPage() {
                         <FieldLabel>Driver&apos;s License</FieldLabel>
                         <Input
                             type="file"
-                            accept="image/*,.pdf"
+                            accept="image/*"
                             onChange={(e) => e.target.files?.[0] && handleDocumentUpload('license', e.target.files[0])}
                         />
                         <FieldDescription>
@@ -343,7 +350,7 @@ export default function DriverRegistrationPage() {
                         <FieldLabel>Vehicle Registration</FieldLabel>
                         <Input
                             type="file"
-                            accept="image/*,.pdf"
+                            accept="image/*"
                             onChange={(e) => e.target.files?.[0] && handleDocumentUpload('vehicleRegistration', e.target.files[0])}
                         />
                         <FieldDescription>
