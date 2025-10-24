@@ -32,10 +32,10 @@ if (process.env.NODE_ENV === 'development' || process.env.NEXT_PUBLIC_ENV === 'd
     // Connect to Functions emulator - use localhost for web development
     connectFunctionsEmulator(functions, 'localhost', 5001);
     logger.info('Connected to Functions emulator at localhost:5001');
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Only log error if it's not already connected
-    if (!error.message.includes('already been called')) {
-      logger.error('Failed to connect to emulators:', error.message);
+    if (!(error as Error).message.includes('already been called')) {
+      logger.error('Failed to connect to emulators:', (error as Error).message);
     }
   }
 }

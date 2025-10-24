@@ -23,7 +23,7 @@ export default function StripeRefreshPage() {
                 <CardHeader>
                     <CardTitle className="text-center">Link Expired</CardTitle>
                     <CardDescription className="text-center">
-                        Your Stripe setup link has expired. This can happen if you've been away from the setup process for too long.
+                        Your Stripe setup link has expired. This can happen if you&apos;ve been away from the setup process for too long.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>

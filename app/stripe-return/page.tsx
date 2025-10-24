@@ -31,7 +31,7 @@ export default function StripeReturnPage() {
                         const verifyStripeAccount = httpsCallable(functions, 'verifyStripeAccountStatus')
                         const result = await verifyStripeAccount({ accountId })
                         
-                        if ((result.data as any).success) {
+                        if ((result.data as { success: boolean }).success) {
                             // Account is properly set up - update Firestore and mark as complete
                             const driverRef = doc(db, "drivers", user.uid)
                             await updateDoc(driverRef, {
@@ -88,11 +88,11 @@ export default function StripeReturnPage() {
                     setStatus('error')
                     toast.error("Stripe setup appears to be incomplete. Please try again.")
                 }
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error('Error handling Stripe return:', error)
                 localStorage.setItem('stripeSetupComplete', JSON.stringify({
                     success: false,
-                    error: error?.message || 'Unknown error',
+                    error: (error as Error)?.message || 'Unknown error',
                     timestamp: Date.now()
                 }))
                 setStatus('error')

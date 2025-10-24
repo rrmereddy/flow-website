@@ -143,7 +143,7 @@ export const createFileInput = (
 export const uploadProfilePicture = async (
     file: File,
     setUploadingImage: (uploading: boolean) => void,
-    setProfileData?: (updater: (prevData: any) => any) => void
+    setProfileData?: (updater: (prevData: Record<string, unknown>) => Record<string, unknown>) => void
 ): Promise<string | null> => {
     if (!file) return null;
 
@@ -178,7 +178,7 @@ export const uploadProfilePicture = async (
 
         // Update local state if setProfileData is provided
         if (setProfileData) {
-            setProfileData((prevData: any) => ({
+            setProfileData((prevData: Record<string, unknown>) => ({
                 ...prevData,
                 profileImage: downloadURL
             }));
@@ -233,10 +233,9 @@ export const uploadDriverDocument = async (
  */
 export const completeImageUploadFlow = async (config: {
     setUploadingImage: (uploading: boolean) => void;
-    setProfileData?: (updater: (prevData: any) => any) => void;
+    setProfileData?: (updater: (prevData: Record<string, unknown>) => Record<string, unknown>) => void;
     uploadType: 'profile' | 'document';
     documentType?: string;
-    fileInputRef?: React.RefObject<HTMLInputElement>;
     accept?: string;
 }): Promise<string | null> => {
     const {
@@ -244,7 +243,6 @@ export const completeImageUploadFlow = async (config: {
         setProfileData = null,
         uploadType = 'profile',
         documentType = null,
-        fileInputRef,
         accept = 'image/*'
     } = config;
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { auth, db, functions } from "@/lib/firebase"
+import { db, functions } from "@/lib/firebase"
 import { useAuth } from "@/lib/auth"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -33,7 +33,6 @@ export default function DriverRegistrationPage() {
     const router = useRouter()
 
     const [currentStep, setCurrentStep] = useState(1)
-    const [driverData, setDriverData] = useState<any>(null)
     const [driverLoading, setDriverLoading] = useState(false)
     
     // Document upload state
@@ -65,7 +64,6 @@ export default function DriverRegistrationPage() {
                     const driverDoc = await getDoc(doc(db, "drivers", user.uid))
                     if (driverDoc.exists()) {
                         const driverData = driverDoc.data()
-                        setDriverData(driverData)
                         // Set current step based on completed sections
                         if (driverData.checklist.driverDocs) {
                             setCurrentStep(2)
@@ -248,9 +246,9 @@ export default function DriverRegistrationPage() {
 			} else {
 				toast.error("Could not get a link from Stripe.");
 			}
-		} catch (error: any) {
+		} catch (error: unknown) {
 			console.error("Error creating Stripe account link:", error);
-			const errorMessage = error?.message || "Could not connect to Stripe.";
+			const errorMessage = (error as Error)?.message || "Could not connect to Stripe.";
 			toast.error(errorMessage);
 		} finally {
 			setDriverLoading(false);
@@ -285,7 +283,7 @@ export default function DriverRegistrationPage() {
             <CardHeader>
                 <CardTitle>Step 1: Document Upload</CardTitle>
                 <CardDescription>
-                    Upload your profile picture, driver's license, and vehicle registration
+                    Upload your profile picture, driver&apos;s license, and vehicle registration
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -303,14 +301,14 @@ export default function DriverRegistrationPage() {
                     </Field>
                     
                     <Field>
-                        <FieldLabel>Driver's License</FieldLabel>
+                        <FieldLabel>Driver&apos;s License</FieldLabel>
                         <Input
                             type="file"
                             accept="image/*,.pdf"
                             onChange={(e) => e.target.files?.[0] && handleDocumentUpload('license', e.target.files[0])}
                         />
                         <FieldDescription>
-                            Upload a clear photo or scan of your driver's license
+                            Upload a clear photo or scan of your driver&apos;s license
                         </FieldDescription>
                     </Field>
                     
@@ -434,7 +432,7 @@ export default function DriverRegistrationPage() {
                     <Field>
                         <FieldLabel>Stripe Account Setup</FieldLabel>
                         <FieldDescription>
-                            We'll help you set up a Stripe Connect account to receive payments from riders.
+                            We&apos;ll help you set up a Stripe Connect account to receive payments from riders.
                             This process includes identity verification and bank account setup.
                         </FieldDescription>
                     </Field>
@@ -443,13 +441,13 @@ export default function DriverRegistrationPage() {
                         <div className="bg-green-50 p-4 rounded-lg mb-4">
                             <h4 className="font-medium text-green-900 mb-2">Setup in Progress</h4>
                             <p className="text-sm text-green-800">
-                                Please complete the Stripe setup process in the opened window. Once finished, you'll be redirected back here.
+                                Please complete the Stripe setup process in the opened window. Once finished, you&apos;ll be redirected back here.
                             </p>
                         </div>
                     )}
                     
                     <div className="bg-blue-50 p-4 rounded-lg">
-                        <h4 className="font-medium text-blue-900 mb-2">What you'll need:</h4>
+                        <h4 className="font-medium text-blue-900 mb-2">What you&apos;ll need:</h4>
                         <ul className="text-sm text-blue-800 space-y-1">
                             <li>• Government-issued ID</li>
                             <li>• Bank account information</li>
