@@ -1,20 +1,17 @@
 "use client"
 
-import { auth, db } from "@/lib/firebase"
+import { auth, db, functions } from "@/lib/firebase"
 import { useAuth } from "@/lib/auth"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
+import { doc, getDoc, updateDoc } from "firebase/firestore"
 import { toast } from "sonner"
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import {
@@ -25,9 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { uploadImageAsync } from "@/lib/imageUpload"
-
+import { httpsCallable } from "firebase/functions"
+import { logger } from "@/lib/logger"
+import Image from "next/image"
 
 
 export default function DriverRegistrationPage() {
@@ -87,6 +85,69 @@ export default function DriverRegistrationPage() {
         }
         fetchDriverData()
     }, [user])
+
+    // Listen for Stripe setup completion from other tabs
+    useEffect(() => {
+        const handleStorageChange = (e: StorageEvent) => {
+            if (e.key === 'stripeSetupComplete') {
+                try {
+                    const stripeData = JSON.parse(e.newValue || '{}')
+                    if (stripeData.success) {
+                        setStripeSetup(prev => ({ 
+                            ...prev, 
+                            onboardingComplete: false,
+                            accountId: stripeData.accountId
+                        }))
+                        setCurrentStep(4)
+                        toast.success("Stripe account setup completed successfully!")
+                        
+                        // Clear the localStorage item after handling
+                        localStorage.removeItem('stripeSetupComplete')
+                    } else {
+                        setStripeSetup(prev => ({ ...prev, onboardingComplete: false }))
+                        toast.error("Stripe setup failed. Please try again.")
+                        
+                        // Clear the localStorage item after handling
+                        localStorage.removeItem('stripeSetupComplete')
+                    }
+                } catch (error) {
+                    console.error('Error parsing Stripe completion data:', error)
+                }
+            }
+        }
+
+        // Check for existing Stripe completion status on page load
+        const checkExistingStripeStatus = () => {
+            try {
+                const stripeData = localStorage.getItem('stripeSetupComplete')
+                if (stripeData) {
+                    const parsedData = JSON.parse(stripeData)
+                    if (parsedData.success) {
+                        setStripeSetup(prev => ({ 
+                            ...prev, 
+                            onboardingComplete: false,
+                            accountId: parsedData.accountId
+                        }))
+                        setCurrentStep(4)
+                        toast.success("Stripe account setup completed successfully!")
+                        
+                        // Clear the localStorage item after handling
+                        localStorage.removeItem('stripeSetupComplete')
+                    }
+                }
+            } catch (error) {
+                console.error('Error checking existing Stripe status:', error)
+            }
+        }
+
+        // Check immediately and listen for changes
+        checkExistingStripeStatus()
+        window.addEventListener('storage', handleStorageChange)
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange)
+        }
+    }, [])
     
     if (loading) {
         return <div className="flex items-center justify-center min-h-screen">Loading...</div>
@@ -109,7 +170,6 @@ export default function DriverRegistrationPage() {
     const saveDocumentsToDB = async () => {
         try {
             setDriverLoading(true)
-            // TODO: Implement actual file upload to Firebase Storage
             // Upload images and get their download URLs
             const profilePictureURL = await uploadImageAsync(documents?.profilePicture || (null as unknown as File), `users/${user.uid}`, 'profilePicture');
             const licenseImageURL = await uploadImageAsync(documents?.license || (null as unknown as File), `drivers/${user.uid}/documents`);
@@ -166,20 +226,36 @@ export default function DriverRegistrationPage() {
     }
 
     const setupStripe = async () => {
-        try {
-            // TODO: Implement actual Stripe Connect onboarding
-            await setDoc(doc(db, "drivers", user.uid), {
-                stripeSetupComplete: true,
-                stripeAccountId: 'placeholder_account_id'
-            }, { merge: true })
-            
-            toast.success("Stripe setup completed!")
-            setCurrentStep(4)
-        } catch (error) {
-            toast.error("Failed to setup Stripe")
-            console.error(error)
-        }
-    }
+		setDriverLoading(true);
+		try {
+            logger.info("Setting up Stripe...");
+			const createStripeAccountLink = httpsCallable(
+				functions,
+				"createStripeAccountLink",
+			);
+			logger.info("Creating Stripe account link...");
+			const result = await createStripeAccountLink({
+				platform: 'web',
+                environment: process.env.NEXT_PUBLIC_ENV
+			});
+			const { url } = result.data as { url: string };
+			logger.info("Stripe account link:", url);
+			if (url) {
+				logger.info("Opening Stripe account link in new tab...");
+				window.open(url, '_blank');
+				// Update the UI to indicate Stripe setup is in progress
+				setStripeSetup(prev => ({ ...prev, onboardingComplete: true }));
+			} else {
+				toast.error("Could not get a link from Stripe.");
+			}
+		} catch (error: any) {
+			console.error("Error creating Stripe account link:", error);
+			const errorMessage = error?.message || "Could not connect to Stripe.";
+			toast.error(errorMessage);
+		} finally {
+			setDriverLoading(false);
+		}
+	};
 
     const renderStepIndicator = () => (
         <div className="flex items-center justify-center mb-8">
@@ -363,6 +439,15 @@ export default function DriverRegistrationPage() {
                         </FieldDescription>
                     </Field>
                     
+                    {stripeSetup.onboardingComplete && (
+                        <div className="bg-green-50 p-4 rounded-lg mb-4">
+                            <h4 className="font-medium text-green-900 mb-2">Setup in Progress</h4>
+                            <p className="text-sm text-green-800">
+                                Please complete the Stripe setup process in the opened window. Once finished, you'll be redirected back here.
+                            </p>
+                        </div>
+                    )}
+                    
                     <div className="bg-blue-50 p-4 rounded-lg">
                         <h4 className="font-medium text-blue-900 mb-2">What you'll need:</h4>
                         <ul className="text-sm text-blue-800 space-y-1">
@@ -374,8 +459,13 @@ export default function DriverRegistrationPage() {
                     </div>
                     
                     <div className="flex justify-end mt-6">
-                        <Button onClick={setupStripe}>
-                            {driverLoading ? "Setting up Stripe..." : "Start Stripe Setup"}
+                        <Button 
+                            onClick={setupStripe}
+                            disabled={driverLoading || stripeSetup.onboardingComplete}
+                        >
+                            {driverLoading ? "Setting up Stripe..." : 
+                             stripeSetup.onboardingComplete ? "Setup in Progress..." : 
+                             "Start Stripe Setup"}
                         </Button>
                     </div>
                 </FieldGroup>
@@ -385,27 +475,20 @@ export default function DriverRegistrationPage() {
 
     const renderCompletionSection = () => (
         <Card>
-            <CardHeader>
-                <CardTitle>Registration Complete!</CardTitle>
-                <CardDescription>
-                    Your driver registration has been completed successfully
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="text-center py-8">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Welcome to Flow!</h3>
-                    <p className="text-gray-600 mb-6">
-                        Your driver account is now active. You can start accepting rides and earning money.
-                    </p>
-                    <Button onClick={() => router.push('/driver/dashboard')}>
-                        Go to Driver Dashboard
-                    </Button>
+            <CardContent className="text-center py-12">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
                 </div>
+                <h3 className="text-xl font-semibold mb-2">Registration Submitted!</h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                    Your account is under review. Download the Flow app to track your application status.
+                </p>
+                <div className="w-32 h-32 bg-gray-200 rounded-lg mx-auto flex items-center justify-center">
+                    <Image src="/Flow_QR.png" alt="Flow App QR Code" width={128} height={128} />
+                </div>
+                <Button variant="outline" className="mt-4" onClick={() => router.push('/')}>Home</Button>
             </CardContent>
         </Card>
     )
