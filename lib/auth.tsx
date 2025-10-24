@@ -13,7 +13,7 @@ import {
   sendPasswordResetEmail,
   deleteUser,
 } from "firebase/auth"
-import { doc, getDoc, setDoc, serverTimestamp, updateDoc, collection, getDocs, where, query, writeBatch } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp, collection, getDocs, where, query, writeBatch } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
 import { logger } from "./logger"
@@ -39,10 +39,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             
             // Update accountStatus to "verified" for all users if it's currently "awaiting verification"
             if (userRole === "user" && userData.accountStatus === "awaiting verification" && firebaseUser.emailVerified) {
-              await updateDoc(doc(db, "users", firebaseUser.uid), {
+              await setDoc(doc(db, "users", firebaseUser.uid), {
                 accountStatus: "verified",
                 emailVerifiedAt: serverTimestamp()
-              })
+              }, { merge: true })
               logger.log("User email verified - updated account status")
             }
             if (userRole === "driver" && userData.accountStatus === "awaiting verification" && firebaseUser.emailVerified) {

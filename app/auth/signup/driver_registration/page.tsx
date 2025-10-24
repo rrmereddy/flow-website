@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { doc, getDoc, setDoc } from "firebase/firestore"
 import { toast } from "sonner"
 import {
   Field,
@@ -181,17 +181,17 @@ export default function DriverRegistrationPage() {
             const vehicleRegistrationImageURL = await uploadImageAsync(documents.vehicleRegistration, `drivers/${user.uid}/documents`);
             // upload the profile picture to user doc
             const userRef = doc(db, "users", user.uid);
-            await updateDoc(userRef, {
+            await setDoc(userRef, {
                 profilePictureURL: profilePictureURL,
-            });
+            }, { merge: true });
 
             // Update the driver's Firestore document
             const driverRef = doc(db, "drivers", user.uid);
-            await updateDoc(driverRef, {
+            await setDoc(driverRef, {
                 licenseImageURL: licenseImageURL,
                 vehicleRegistrationImageURL: vehicleRegistrationImageURL,
                 "checklist.driverDocs": true,
-            });
+            }, { merge: true });
             
             toast.success("Documents uploaded successfully!")
             setCurrentStep(2)
@@ -208,7 +208,7 @@ export default function DriverRegistrationPage() {
         try {
             setDriverLoading(true)
             const driverRef = doc(db, "drivers", user.uid);
-            await updateDoc(driverRef, {
+            await setDoc(driverRef, {
                 "checklist.vehicleDocs": true,
                 vehicle: {
                     make: vehicleInfo.make,
@@ -217,7 +217,7 @@ export default function DriverRegistrationPage() {
                     color: vehicleInfo.color,
                     licensePlate: vehicleInfo.licensePlate
                 }
-            })
+            }, { merge: true })
             
             toast.success("Vehicle information saved!")
             setCurrentStep(3)

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
-import { doc, updateDoc } from "firebase/firestore"
+import { doc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase"
 import { useAuth } from "@/lib/auth"
 import { logger } from "@/lib/logger"
@@ -34,10 +34,10 @@ export default function StripeReturnPage() {
                         if ((result.data as { success: boolean }).success) {
                             // Account is properly set up - update Firestore and mark as complete
                             const driverRef = doc(db, "drivers", user.uid)
-                            await updateDoc(driverRef, {
+                            await setDoc(driverRef, {
                                 "checklist.paymentInfo": true,
                                 stripeAccountId: accountId
-                            })
+                            }, { merge: true })
                             
                             // Store completion status in localStorage to communicate with the original tab
                             localStorage.setItem('stripeSetupComplete', JSON.stringify({

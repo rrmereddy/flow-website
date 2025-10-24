@@ -38,7 +38,7 @@
 
 import { auth, storage, db } from './firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 /**
  * Image file validation
@@ -172,9 +172,9 @@ export const uploadProfilePicture = async (
 
         // Update user document in Firestore
         const userDocRef = doc(db, 'users', user.uid);
-        await updateDoc(userDocRef, {
+        await setDoc(userDocRef, {
             profilePictureURL: downloadURL
-        });
+        }, { merge: true });
 
         // Update local state if setProfileData is provided
         if (setProfileData) {
