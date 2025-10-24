@@ -13,7 +13,7 @@ import {
   sendPasswordResetEmail,
   deleteUser,
 } from "firebase/auth"
-import { doc, getDoc, setDoc, serverTimestamp, updateDoc, collection, getDocs, where, query } from "firebase/firestore"
+import { doc, getDoc, setDoc, serverTimestamp, updateDoc, collection, getDocs, where, query, writeBatch } from "firebase/firestore"
 import { auth, db } from "./firebase"
 import { toast } from "sonner"
 import { logger } from "./logger"
@@ -46,10 +46,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               logger.log("User email verified - updated account status")
             }
             if (userRole === "driver" && userData.accountStatus === "awaiting verification" && firebaseUser.emailVerified) {
-              await updateDoc(doc(db, "drivers", firebaseUser.uid), {
-                'checklist.emailVerified': true,
-              })
-              logger.log("Driver email verified - updated account status")
+                const userRef = doc(db, "users", firebaseUser.uid)
+                const driverRef = doc(db, "drivers", firebaseUser.uid)
+                const batch = writeBatch(db)
+                // Keep users and drivers in sync
+                batch.update(userRef, { accountStatus: "verified", emailVerifiedAt: serverTimestamp() })
+                batch.set(
+                  driverRef,
+                  { checklist: { emailVerified: true }, accountStatus: "verified", emailVerifiedAt: serverTimestamp() },
+                  { merge: true },
+                )
+                await batch.commit()
+                logger.log("Driver email verified — updated user/drivers status and checklist")
             }
             
             setUser({

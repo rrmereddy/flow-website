@@ -70,7 +70,7 @@ export const uploadImageAsync = async (
         const fileNameToUse = fileName || `${Date.now()}_${file.name}`;
         const fileRef = ref(storage, `${folder}/${fileNameToUse}`);
         
-        await uploadBytes(fileRef, file);
+        await uploadBytes(fileRef, file, { contentType: file.type });
         return await getDownloadURL(fileRef);
     } catch (error) {
         console.error('Upload error:', error);

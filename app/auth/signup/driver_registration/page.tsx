@@ -168,10 +168,17 @@ export default function DriverRegistrationPage() {
     const saveDocumentsToDB = async () => {
         try {
             setDriverLoading(true)
+            
+            // Validate that all required documents are present
+            if (!documents.profilePicture || !documents.license || !documents.vehicleRegistration) {
+                toast.error("Please upload all required documents")
+                return
+            }
+            
             // Upload images and get their download URLs
-            const profilePictureURL = await uploadImageAsync(documents?.profilePicture || (null as unknown as File), `users/${user.uid}`, 'profilePicture');
-            const licenseImageURL = await uploadImageAsync(documents?.license || (null as unknown as File), `drivers/${user.uid}/documents`);
-            const vehicleRegistrationImageURL = await uploadImageAsync(documents?.vehicleRegistration || (null as unknown as File), `drivers/${user.uid}/documents`);
+            const profilePictureURL = await uploadImageAsync(documents.profilePicture, `users/${user.uid}`, 'profilePicture');
+            const licenseImageURL = await uploadImageAsync(documents.license, `drivers/${user.uid}/documents`);
+            const vehicleRegistrationImageURL = await uploadImageAsync(documents.vehicleRegistration, `drivers/${user.uid}/documents`);
             // upload the profile picture to user doc
             const userRef = doc(db, "users", user.uid);
             await updateDoc(userRef, {
