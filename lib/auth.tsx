@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 batch.update(userRef, { accountStatus: "verified", emailVerifiedAt: serverTimestamp() })
                 batch.set(
                   driverRef,
-                  { checklist: { emailVerified: true }, accountStatus: "verified", emailVerifiedAt: serverTimestamp() },
+                  { checklist: { emailVerified: true }, accountStatus: "email_verified", emailVerifiedAt: serverTimestamp() },
                   { merge: true },
                 )
                 await batch.commit()
