@@ -11,8 +11,8 @@ import { Analytics } from "@vercel/analytics/react"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Flow - Your Ride, Your Way",
-  description: "Fast, reliable rides at your fingertips. Join thousands of riders and drivers on our platform.",
+  title: "Ride with Flow – Safe, Affordable, and Reliable Rides",
+  description: "Download Flow to get fast, affordable rides at your fingertips. Drive and earn on your schedule.",
 }
 
 export default function RootLayout({
@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
     <head>
       <link rel="icon" href="/logo.png" />
-      <title>Flow - Your Ride, Your Way</title>
+      <title>Ride with Flow – Safe, Affordable, and Reliable Rides</title>
     </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
