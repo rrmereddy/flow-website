@@ -135,7 +135,7 @@ export default function WaitlistPage() {
                 </div>
                 <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
                   <Mail className="h-4 w-4" />
-                  <p>Confirmation email sent</p>
+                  {/* <p>Confirmation email sent</p> */}
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
