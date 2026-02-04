@@ -152,7 +152,7 @@ export default function WaitlistPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="rounded-full h-10 w-10 hover:text-blue-600 hover:border-blue-200"
+                          className="rounded-full h-10 w-10 hover:text-blue-600 hover:border-blue-200 cursor-pointer"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +182,7 @@ export default function WaitlistPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="rounded-full h-10 w-10 hover:text-pink-600 hover:border-pink-200"
+                          className="rounded-full h-10 w-10 hover:text-pink-600 hover:border-pink-200 cursor-pointer"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +214,7 @@ export default function WaitlistPage() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="rounded-full h-10 w-10 hover:text-purple-600 hover:border-purple-200"
+					className="rounded-full h-10 w-10 hover:text-purple-600 hover:border-purple-200 cursor-pointer"
                       onClick={handleCopy}
                     >
                       {copied ? (
@@ -227,7 +227,7 @@ export default function WaitlistPage() {
                   </div>
                 </div>
                 <Link href="/" className="w-full">
-                  <Button variant="default" className="w-full">
+                  <Button variant="default" className="w-full cursor-pointer">
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Return to Home
                   </Button>
