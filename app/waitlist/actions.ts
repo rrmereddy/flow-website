@@ -1,10 +1,16 @@
 "use server";
 
 import { db } from "@/lib/firebase";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { waitlistSchema, WaitlistFormData } from "@/lib/validations";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { waitlistSchema } from "@/lib/validations";
 
-// Define the State Type explicitly
 export type WaitlistState = {
   success: boolean;
   message?: string;
@@ -14,16 +20,11 @@ export type WaitlistState = {
   };
 };
 
-// --- Service Layer: Email ---
-async function sendWelcomeEmail(data: WaitlistFormData) {
-  // TODO: Add Mailgun
-  // Placeholder for Mailgun integration
-  console.log(
-    `[Mock Email] Sending welcome email to ${data.email}`,
-  );
+async function sendWelcomeEmail(email: string) {
+  //TODO: add mailgun
+  console.log(`[Mock Email] Sending welcome email to ${email} (Driver)`);
 }
 
-// Update the function signature to use the type
 export async function joinWaitlistAction(
   prevState: WaitlistState,
   formData: FormData,
@@ -33,6 +34,7 @@ export async function joinWaitlistAction(
     email: formData.get("email"),
   };
 
+  // 1. Validate Input Format
   const validatedFields = waitlistSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
@@ -45,14 +47,32 @@ export async function joinWaitlistAction(
   const data = validatedFields.data;
 
   try {
-    await addDoc(collection(db, "waitlist"), {
+    const waitlistRef = collection(db, "waitlist");
+
+    // 2. Check for Duplicates (The new validation)
+    const q = query(waitlistRef, where("email", "==", data.email));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      // If we found a match, return an error immediately
+      return {
+        success: false,
+        errors: {
+          email: ["This email is already on the waitlist."],
+        },
+        message: "You are already on the list!",
+      };
+    }
+
+    // 3. Save if unique
+    await addDoc(waitlistRef, {
       ...data,
       createdAt: serverTimestamp(),
       source: "web_waitlist_driver_only",
       status: "pending",
     });
 
-    sendWelcomeEmail(data).catch((err) =>
+    sendWelcomeEmail(data.email).catch((err) =>
       console.error("Failed to send welcome email:", err),
     );
 
