@@ -1,17 +1,20 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useRoleProtection } from "@/lib/auth"
+import { useRoleProtection } from '@/lib/auth'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   // Protect this route for drivers only
-  const { loading } = useRoleProtection(["driver"])
+  const { loading } = useRoleProtection(['driver'])
 
   if (loading) {
-    return <div className="flex h-screen items-center justify-center">Loading...</div>
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Loading...
+      </div>
+    )
   }
 
   return <>{children}</>
 }
-

@@ -1,9 +1,9 @@
-"use client";
+'use client'
 
-import { useActionState, useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { motion } from "framer-motion"; // Changed from 'motion/react' to match your other files
+import { useActionState, useEffect, useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { motion } from 'framer-motion' // Changed from 'motion/react' to match your other files
 import {
   Loader2,
   ArrowLeft,
@@ -11,12 +11,12 @@ import {
   Mail,
   Share2,
   Check,
-} from "lucide-react";
-import { toast } from "sonner";
+} from 'lucide-react'
+import { toast } from 'sonner'
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Card,
   CardContent,
@@ -24,52 +24,52 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { ShineBorder } from "@/components/magicui/shine-border";
-import { joinWaitlistAction, WaitlistState } from "./actions";
+} from '@/components/ui/card'
+import { ShineBorder } from '@/components/magicui/shine-border'
+import { joinWaitlistAction, WaitlistState } from './actions'
 
 const initialState: WaitlistState = {
   success: false,
-  message: "",
+  message: '',
   errors: {},
-};
+}
 
 export default function WaitlistPage() {
   const [state, action, isPending] = useActionState(
     joinWaitlistAction,
-    initialState,
-  );
-  const [copied, setCopied] = useState(false);
+    initialState
+  )
+  const [copied, setCopied] = useState(false)
 
   // Toast notifications
   useEffect(() => {
     if (state.message) {
       if (state.success) {
-        toast.success("Welcome aboard!", { description: state.message });
+        toast.success('Welcome aboard!', { description: state.message })
       } else if (!state.errors) {
-        toast.error("Error", { description: state.message });
+        toast.error('Error', { description: state.message })
       }
     }
-  }, [state]);
+  }, [state])
 
   const handleCopy = async () => {
-    const textToCopy = "https://roamwithflow.com/";
+    const textToCopy = 'https://roamwithflow.com/'
     try {
-      await navigator.clipboard.writeText(textToCopy);
-      setCopied(true);
-      toast.success("Link Copied!", {
-        description: "Share link copied to clipboard",
-      });
-      setTimeout(() => setCopied(false), 2000);
+      await navigator.clipboard.writeText(textToCopy)
+      setCopied(true)
+      toast.success('Link Copied!', {
+        description: 'Share link copied to clipboard',
+      })
+      setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error("Failed to copy text: ", err);
-      toast.error("Failed to copy text");
+      console.error('Failed to copy text: ', err)
+      toast.error('Failed to copy text')
     }
-  };
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="flex flex-1 flex-col justify-center items-center p-4 md:p-8">
+      <div className="flex flex-1 flex-col items-center justify-center p-4 md:p-8">
         {/* Logo Animation */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -94,7 +94,7 @@ export default function WaitlistPage() {
             <motion.span
               className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent dark:from-blue-400 dark:to-purple-400"
               whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             >
               Flow
             </motion.span>
@@ -108,14 +108,14 @@ export default function WaitlistPage() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <Card className="mx-auto max-w-md w-full shadow-lg relative overflow-hidden">
+            <Card className="relative mx-auto w-full max-w-md overflow-hidden shadow-lg">
               {/* Shine Border for Success Card too */}
               <ShineBorder
-                shineColor={["#4ade80", "#22c55e", "#16a34a"]} // Green theme for success
+                shineColor={['#4ade80', '#22c55e', '#16a34a']} // Green theme for success
                 borderWidth={2}
                 duration={10}
               />
-              <CardHeader className="text-center pb-2">
+              <CardHeader className="pb-2 text-center">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
                   <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-400" />
                 </div>
@@ -126,21 +126,21 @@ export default function WaitlistPage() {
                   Welcome to the Flow driver community
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-center space-y-4 pb-2">
-                <div className="bg-muted p-4 rounded-lg">
+              <CardContent className="space-y-4 pb-2 text-center">
+                <div className="bg-muted rounded-lg p-4">
                   <p className="text-sm">
                     You have been successfully signed up. We will notify you via
                     email as soon as we launch driver onboarding in your area.
                   </p>
                 </div>
-                <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground">
+                <div className="text-muted-foreground flex items-center justify-center space-x-2 text-sm">
                   <Mail className="h-4 w-4" />
                   {/* <p>Confirmation email sent</p> */}
                 </div>
               </CardContent>
               <CardFooter className="flex flex-col space-y-4">
                 <div className="w-full">
-                  <p className="text-sm text-center mb-2 text-muted-foreground">
+                  <p className="text-muted-foreground mb-2 text-center text-sm">
                     Help us spread the word
                   </p>
                   <div className="flex justify-center space-x-4">
@@ -152,7 +152,7 @@ export default function WaitlistPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="rounded-full h-10 w-10 hover:text-blue-600 hover:border-blue-200 cursor-pointer"
+                          className="h-10 w-10 cursor-pointer rounded-full hover:border-blue-200 hover:text-blue-600"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +182,7 @@ export default function WaitlistPage() {
                         <Button
                           variant="outline"
                           size="icon"
-                          className="rounded-full h-10 w-10 hover:text-pink-600 hover:border-pink-200 cursor-pointer"
+                          className="h-10 w-10 cursor-pointer rounded-full hover:border-pink-200 hover:text-pink-600"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +214,7 @@ export default function WaitlistPage() {
                     <Button
                       variant="outline"
                       size="icon"
-					className="rounded-full h-10 w-10 hover:text-purple-600 hover:border-purple-200 cursor-pointer"
+                      className="h-10 w-10 cursor-pointer rounded-full hover:border-purple-200 hover:text-purple-600"
                       onClick={handleCopy}
                     >
                       {copied ? (
@@ -237,10 +237,10 @@ export default function WaitlistPage() {
           </motion.div>
         ) : (
           /* --- FORM STATE (Matched to Signup Page Styling) --- */
-          <div className="mx-auto w-full max-w-md space-y-6 rounded-lg border bg-card p-6 shadow-lg relative overflow-hidden">
+          <div className="bg-card relative mx-auto w-full max-w-md space-y-6 overflow-hidden rounded-lg border p-6 shadow-lg">
             {/* Position ShineBorder within the card container */}
             <ShineBorder
-              shineColor={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
+              shineColor={['#A07CFE', '#FE8FB5', '#FFBE7B']}
               borderWidth={2}
               duration={10}
             />
@@ -283,20 +283,24 @@ export default function WaitlistPage() {
                 )}
               </div>
 
-              <div className="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-md border border-amber-200 dark:border-amber-800">
-                <p className="text-xs text-amber-700 dark:text-amber-400 flex gap-2">
+              <div className="rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950/30">
+                <p className="flex gap-2 text-xs text-amber-700 dark:text-amber-400">
                   <span>We will contact you with onboarding details soon.</span>
                 </p>
               </div>
 
-              <Button type="submit" className="w-full cursor-pointer" disabled={isPending}>
+              <Button
+                type="submit"
+                className="w-full cursor-pointer"
+                disabled={isPending}
+              >
                 {isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Joining...
                   </>
                 ) : (
-                  "Join Waitlist"
+                  'Join Waitlist'
                 )}
               </Button>
             </form>
@@ -314,5 +318,5 @@ export default function WaitlistPage() {
         )}
       </div>
     </div>
-  );
+  )
 }

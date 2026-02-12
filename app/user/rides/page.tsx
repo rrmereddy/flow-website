@@ -1,50 +1,57 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Car, Clock, MapPin, Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useToast } from "@/hooks/use-toast"
+import { useState } from 'react'
+import { Car, Clock, MapPin, Search } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useToast } from '@/hooks/use-toast'
 
 export default function UserRides() {
   const { toast } = useToast()
-  const [pickup, setPickup] = useState("")
-  const [destination, setDestination] = useState("")
-  const [rideType, setRideType] = useState("standard")
+  const [pickup, setPickup] = useState('')
+  const [destination, setDestination] = useState('')
+  const [rideType, setRideType] = useState('standard')
   const [isLoading, setIsLoading] = useState(false)
 
   // Mock data for available drivers
   const availableDrivers = [
     {
-      id: "DRV-1234",
-      name: "Michael Smith",
-      vehicle: "Toyota Camry",
-      plate: "ABC-1234",
+      id: 'DRV-1234',
+      name: 'Michael Smith',
+      vehicle: 'Toyota Camry',
+      plate: 'ABC-1234',
       rating: 4.9,
-      arrivalTime: "5 min",
-      price: "$12.50",
+      arrivalTime: '5 min',
+      price: '$12.50',
     },
     {
-      id: "DRV-1235",
-      name: "Sarah Johnson",
-      vehicle: "Honda Civic",
-      plate: "XYZ-5678",
+      id: 'DRV-1235',
+      name: 'Sarah Johnson',
+      vehicle: 'Honda Civic',
+      plate: 'XYZ-5678',
       rating: 4.8,
-      arrivalTime: "8 min",
-      price: "$11.75",
+      arrivalTime: '8 min',
+      price: '$11.75',
     },
     {
-      id: "DRV-1236",
-      name: "David Wilson",
-      vehicle: "Ford Fusion",
-      plate: "DEF-9012",
+      id: 'DRV-1236',
+      name: 'David Wilson',
+      vehicle: 'Ford Fusion',
+      plate: 'DEF-9012',
       rating: 4.7,
-      arrivalTime: "12 min",
-      price: "$10.25",
+      arrivalTime: '12 min',
+      price: '$10.25',
     },
   ]
 
@@ -55,8 +62,8 @@ export default function UserRides() {
     setTimeout(() => {
       setIsLoading(false)
       toast({
-        title: "Ride Booked",
-        description: "Your ride has been successfully booked: " + driverId,
+        title: 'Ride Booked',
+        description: 'Your ride has been successfully booked: ' + driverId,
       })
     }, 1500)
   }
@@ -65,7 +72,9 @@ export default function UserRides() {
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold tracking-tight">Book a Ride</h1>
-        <p className="text-muted-foreground">Enter your pickup and destination to find available drivers.</p>
+        <p className="text-muted-foreground">
+          Enter your pickup and destination to find available drivers.
+        </p>
       </div>
 
       <Tabs defaultValue="ride" className="space-y-4">
@@ -79,7 +88,9 @@ export default function UserRides() {
           <Card>
             <CardHeader>
               <CardTitle>Ride Details</CardTitle>
-              <CardDescription>Enter your pickup location and destination</CardDescription>
+              <CardDescription>
+                Enter your pickup location and destination
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -108,7 +119,11 @@ export default function UserRides() {
               </div>
               <div className="space-y-2">
                 <Label>Ride Type</Label>
-                <RadioGroup value={rideType} onValueChange={setRideType} className="flex flex-col space-y-1">
+                <RadioGroup
+                  value={rideType}
+                  onValueChange={setRideType}
+                  className="flex flex-col space-y-1"
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="economy" id="economy" />
                     <Label htmlFor="economy" className="font-normal">
@@ -148,17 +163,21 @@ export default function UserRides() {
                       <div className="flex-1 space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="font-medium">{driver.name}</div>
-                          <div className="text-sm font-medium">{driver.price}</div>
+                          <div className="text-sm font-medium">
+                            {driver.price}
+                          </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Car className="h-4 w-4 text-muted-foreground" />
+                          <Car className="text-muted-foreground h-4 w-4" />
                           <div className="text-sm">
                             {driver.vehicle} ({driver.plate})
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-muted-foreground" />
-                          <div className="text-sm">Arrives in {driver.arrivalTime}</div>
+                          <Clock className="text-muted-foreground h-4 w-4" />
+                          <div className="text-sm">
+                            Arrives in {driver.arrivalTime}
+                          </div>
                         </div>
                         <div className="flex items-center">
                           {[...Array(5)].map((_, i) => (
@@ -168,7 +187,9 @@ export default function UserRides() {
                               viewBox="0 0 24 24"
                               fill="currentColor"
                               className={`h-4 w-4 ${
-                                i < Math.floor(driver.rating) ? "text-yellow-500" : "text-gray-300"
+                                i < Math.floor(driver.rating)
+                                  ? 'text-yellow-500'
+                                  : 'text-gray-300'
                               }`}
                             >
                               <path
@@ -182,8 +203,11 @@ export default function UserRides() {
                         </div>
                       </div>
                       <div className="flex items-center justify-center">
-                        <Button onClick={() => handleBookRide(driver.id)} disabled={isLoading}>
-                          {isLoading ? "Booking..." : "Book Now"}
+                        <Button
+                          onClick={() => handleBookRide(driver.id)}
+                          disabled={isLoading}
+                        >
+                          {isLoading ? 'Booking...' : 'Book Now'}
                         </Button>
                       </div>
                     </div>
@@ -202,7 +226,9 @@ export default function UserRides() {
             </CardHeader>
             <CardContent>
               <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
-                <p className="text-sm text-muted-foreground">Schedule ride feature coming soon</p>
+                <p className="text-muted-foreground text-sm">
+                  Schedule ride feature coming soon
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -216,7 +242,9 @@ export default function UserRides() {
             </CardHeader>
             <CardContent>
               <div className="flex h-[200px] flex-col items-center justify-center rounded-lg border border-dashed">
-                <p className="text-sm text-muted-foreground">Ride history feature coming soon</p>
+                <p className="text-muted-foreground text-sm">
+                  Ride history feature coming soon
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -225,4 +253,3 @@ export default function UserRides() {
     </div>
   )
 }
-

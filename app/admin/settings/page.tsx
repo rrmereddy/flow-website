@@ -1,7 +1,3 @@
-export default function Page(){
-    return (
-        <div>
-            Not yet implemented.
-        </div>
-    )
+export default function Page() {
+  return <div>Not yet implemented.</div>
 }
