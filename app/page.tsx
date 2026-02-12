@@ -52,9 +52,13 @@ export default function LandingPage() {
     visible: {
       y: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 100, damping: 10 },
-    },
-  }
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 10
+      }
+    }
+  } as const; // <--- ADD THIS HERE
 
   const fadeInUpVariants = {
     hidden: { y: 60, opacity: 0 },
@@ -63,7 +67,7 @@ export default function LandingPage() {
       opacity: 1,
       transition: { type: "spring", stiffness: 100, damping: 12, duration: 0.6 },
     },
-  }
+  } as const;
 
   const staggerContainerVariants = {
     hidden: { opacity: 0 },
@@ -88,7 +92,7 @@ export default function LandingPage() {
           "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
       transition: { type: "spring", stiffness: 400, damping: 10 },
     },
-  }
+  } as const;
 
   const founderCardVariants = {
     hidden: { y: 50, opacity: 0, rotateY: 30 },
@@ -98,13 +102,17 @@ export default function LandingPage() {
       rotateY: 0,
       transition: { type: "spring", stiffness: 100, damping: 12 },
     },
-  }
+  } as const;
 
   // Pulse animation for hero circle
   const pulseAnimation = {
     scale: [1, 1.05, 1],
-    opacity: [0.7, 0.9, 0.7],
-    transition: { duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
+    opacity: [0.5, 0.8, 0.5],
+    transition: {
+      duration: 3,
+      repeat: Infinity,
+      ease: "easeInOut",
+    } as const, // <--- Add this
   }
 
   return (

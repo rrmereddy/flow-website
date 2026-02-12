@@ -27,7 +27,7 @@ export default function PrivacyPolicyPage() {
       opacity: 1,
       transition: { type: "spring", stiffness: 100, damping: 10 },
     },
-  }
+  } as const;
 
   const fadeInUpVariants = {
     hidden: { y: 60, opacity: 0 },
@@ -36,7 +36,7 @@ export default function PrivacyPolicyPage() {
       opacity: 1,
       transition: { type: "spring", stiffness: 100, damping: 12, duration: 0.6 },
     },
-  }
+  } as const;
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950">
