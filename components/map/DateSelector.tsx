@@ -52,12 +52,9 @@ export function DateSelector({ date, setDate }: DateSelectorProps) {
           initialFocus
           className="p-3"
           classNames={{
-            day_selected: "bg-indigo-600 text-white hover:bg-indigo-600 focus:bg-indigo-600",
-            day_today: "bg-slate-800 text-slate-100",
-            day_outside: "text-slate-600 opacity-50",
-            day_disabled: "text-slate-700 opacity-30 cursor-not-allowed hover:bg-transparent",
+            disabled: "cursor-not-allowed",
             head_cell: "text-slate-500",
-            caption_label: "text-slate-200 font-medium"
+            caption_label: "text-slate-200 font-medium",
           }}
         />
         <div className="p-3 border-t border-slate-800 bg-slate-900/50">
