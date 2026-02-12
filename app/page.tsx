@@ -174,7 +174,7 @@ export default function LandingPage() {
               </motion.div>
 
               <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.7, duration: 0.5 }}>
-                <Link href="/auth/signup">
+                <Link href="/waitlist">
                   <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <Button
                         size="sm"
