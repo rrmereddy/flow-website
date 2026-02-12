@@ -13,6 +13,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>
   }
 
-  return <UserDriverLayout>{children}</UserDriverLayout>
+  return <>{children}</>
 }
 
