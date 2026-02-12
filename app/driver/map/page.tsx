@@ -72,7 +72,7 @@ export default function DriverMapPage() {
     <div className="relative flex flex-col h-screen bg-slate-950 text-slate-100 overflow-hidden">
       
       {/* --- TOP HUD --- */}
-      <div className="absolute top-0 left-0 right-0 z-[400] p-4 pt-6 bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
+      <div className="absolute top-0 left-0 right-0 z-10 p-4 pt-6 bg-gradient-to-b from-slate-950/90 to-transparent pointer-events-none">
         <div className="max-w-xl mx-auto space-y-3 pointer-events-auto">
           
           <div className="flex items-center justify-between">
@@ -102,7 +102,7 @@ export default function DriverMapPage() {
             <button
               onClick={() => setIsPlaying(!isPlaying)}
               disabled={isLoading}
-              className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md hover:bg-indigo-500 transition-colors shrink-0 disabled:opacity-50"
+              className="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-md hover:bg-indigo-500 transition-colors shrink-0 disabled:opacity-50 cursor-pointer"
             >
               {isPlaying ? (
                 <Pause className="w-4 h-4 fill-current" />
@@ -153,7 +153,7 @@ export default function DriverMapPage() {
             <SheetTrigger asChild>
               <Button 
                 size="lg" 
-                className="w-full h-14 text-lg font-bold shadow-2xl shadow-indigo-500/20 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white border-t border-white/20"
+                className="w-full h-14 text-lg font-bold shadow-2xl shadow-indigo-500/20 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white border-t border-white/20 cursor-pointer"
               >
                 <Navigation className="w-5 h-5 mr-2" />
                 Plan My Day
