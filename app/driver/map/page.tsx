@@ -270,7 +270,7 @@ export default function DriverMapPage() {
                 ) : (
                   <div className="space-y-6">
                     <div className="relative border-l-2 border-slate-800 ml-3 space-y-8 pb-4">
-                      {itinerary.map((item, index) => (
+                      {itinerary.map((item) => (
                         <div key={item.id} className="relative pl-8">
                           <div className={cn(
                             "absolute -left-[9px] top-0 w-4 h-4 rounded-full border-2 border-slate-950",

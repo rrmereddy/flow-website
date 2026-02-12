@@ -6,9 +6,16 @@ export type ItineraryItem = {
   endTime: string;
   location: string;
   reason: string;
-  earnings: string; // Fake estimate
+  earnings: string;
   intensity: Hotspot["intensity"];
   coords: { lat: number; lng: number };
+};
+
+// Define the shape of a block internally
+type ShiftBlock = {
+  hotspot: Hotspot;
+  start: number;
+  end: number;
 };
 
 export function generateShiftPlan(
@@ -18,41 +25,34 @@ export function generateShiftPlan(
 ): ItineraryItem[] {
   const plan: ItineraryItem[] = [];
   
-  let currentBlock: {
-    hotspot: Hotspot | null;
-    start: number;
-    end: number;
-  } | null = null;
+  // FIX: Explicitly typed, removed " | null" from hotspot since we ensure it exists
+  let currentBlock: ShiftBlock | null = null;
 
-  // Loop through selected hours
   for (let h = startHour; h < endHour; h++) {
-    // 1. Find the BEST hotspot for this hour
-    // (Sort by intensity: critical > high > medium > low)
     const hourData = data.find((d) => d.hour === h);
     if (!hourData) continue;
 
+    // Sort to find best spot
     const bestSpot = hourData.hotspots.sort((a, b) => {
       const score = { critical: 4, high: 3, medium: 2, low: 1 };
       return score[b.intensity] - score[a.intensity];
-    })[0]; // Grab top 1
+    })[0];
 
-    // If no data for this hour, skip or generic
+    // If no data for this hour, skip
     if (!bestSpot) continue;
 
-    // 2. Grouping Logic
-    if (currentBlock && currentBlock.hotspot?.id === bestSpot.id) {
-      // Same spot as last hour? Extend the block.
+    // Grouping Logic
+    if (currentBlock && currentBlock.hotspot.id === bestSpot.id) {
       currentBlock.end = h + 1;
     } else {
-      // New spot? Push old block and start new one.
       if (currentBlock) {
         plan.push(formatBlock(currentBlock));
       }
+      // Since bestSpot is confirmed to exist here, this assignment is safe
       currentBlock = { hotspot: bestSpot, start: h, end: h + 1 };
     }
   }
 
-  // Push the final block
   if (currentBlock) {
     plan.push(formatBlock(currentBlock));
   }
@@ -60,14 +60,14 @@ export function generateShiftPlan(
   return plan;
 }
 
-function formatBlock(block: any): ItineraryItem {
+// FIX: Replaced 'any' with the specific 'ShiftBlock' type
+function formatBlock(block: ShiftBlock): ItineraryItem {
   const formatTime = (h: number) => {
     const period = h >= 12 && h < 24 ? "PM" : "AM";
     const disp = h % 12 || 12;
     return `${disp} ${period}`;
   };
 
-  // Fake earnings math ($25/hr base + multipliers)
   const duration = block.end - block.start;
   const multiplier = block.hotspot.intensity === "critical" ? 2 : 1.5;
   const lowEst = Math.round(duration * 20 * multiplier);
@@ -86,7 +86,6 @@ function formatBlock(block: any): ItineraryItem {
 }
 
 function getReadableName(spot: Hotspot) {
-  // Map IDs to pretty names if needed, or use reason
   if (spot.id.includes("northgate")) return "Northgate District";
   if (spot.id.includes("stadium")) return "Kyle Field";
   if (spot.id.includes("airport")) return "Easterwood Airport";
