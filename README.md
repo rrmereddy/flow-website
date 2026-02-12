@@ -19,24 +19,30 @@ By prioritizing safety, community, and innovation, we connect riders with reliab
 ## 🌟 What Makes Flow Different
 
 ### 💰 Transparent Pricing Model
+
 Our transparent pricing model allows drivers to better understand their earning potential, ensuring they know exactly what they'll earn from each ride.
 
 ### 📱 Subscription-Driven Platform
+
 With our innovative subscription model, drivers have fixed costs instead of percentage-based fees, dramatically increasing their earnings potential.
 
 ### 🏪 Driver-First Marketplace
+
 Through our marketplace approach, we return pricing power to the people, letting demand and supply naturally determine fair rates.
 
 ## 👥 Founding Team
 
 ### Moulik Mishra - CEO
-*Visionary leader driving Flow's mission to transform transportation*
 
-### Justin Le - Lead Backend Developer  
-*Architecting the robust technical foundation that powers our platform*
+_Visionary leader driving Flow's mission to transform transportation_
+
+### Justin Le - Lead Backend Developer
+
+_Architecting the robust technical foundation that powers our platform_
 
 ### Ritin Mereddy - Lead Frontend Developer
-*Creating the beautiful, intuitive user experiences that define Flow*
+
+_Creating the beautiful, intuitive user experiences that define Flow_
 
 ## 🎯 Our Vision
 

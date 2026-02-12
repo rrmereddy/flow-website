@@ -1,18 +1,19 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { Toaster } from "@/components/ui/sonner"
-import { ThemeProvider } from "@/components/theme-provider"
-import { AuthProvider } from "@/lib/auth"
-import { SpeedInsights } from "@vercel/speed-insights/next"
-import { Analytics } from "@vercel/analytics/react"
+import type React from 'react'
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
+import { Toaster } from '@/components/ui/sonner'
+import { ThemeProvider } from '@/components/theme-provider'
+import { AuthProvider } from '@/lib/auth'
+import { SpeedInsights } from '@vercel/speed-insights/next'
+import { Analytics } from '@vercel/analytics/react'
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: "Flow - Your Ride, Your Way",
-  description: "Fast, reliable rides at your fingertips. Join thousands of riders and drivers on our platform.",
+  title: 'Flow - Your Ride, Your Way',
+  description:
+    'Fast, reliable rides at your fingertips. Join thousands of riders and drivers on our platform.',
 }
 
 export default function RootLayout({
@@ -22,21 +23,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-    <head>
-      <link rel="icon" href="/logo.png" />
-      <title>Flow - Your Ride, Your Way</title>
-    </head>
+      <head>
+        <link rel="icon" href="/logo.png" />
+        <title>Flow - Your Ride, Your Way</title>
+      </head>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
           <AuthProvider>
             {children}
-            <SpeedInsights/>
-            <Analytics/>
-            <Toaster position="top-center"/>
+            <SpeedInsights />
+            <Analytics />
+            <Toaster position="top-center" />
           </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
   )
 }
-
