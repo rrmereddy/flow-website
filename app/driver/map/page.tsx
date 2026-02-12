@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { TimeSlice } from "@/types/hotspots"
 import { getPredictedHotspots } from "@/lib/api/hotspots"
+import { DateSelector } from "@/components/map/DateSelector"
 
 // Dynamic Map Import
 const DriverMap = dynamic(() => import("@/components/map/DriverMap"), {
@@ -18,7 +19,7 @@ const DriverMap = dynamic(() => import("@/components/map/DriverMap"), {
 })
 
 export default function DriverMapPage() {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date()) // Default to today
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [timelineData, setTimelineData] = useState<TimeSlice[]>([])
   const [isLoading, setIsLoading] = useState(true)
   
@@ -76,17 +77,10 @@ export default function DriverMapPage() {
           
           <div className="flex items-center justify-between">
             {/* Clickable Badge for Future Date Selection */}
-            <Badge 
-              variant="outline" 
-              className="bg-slate-900/80 backdrop-blur border-slate-700 text-slate-300 shadow-sm cursor-pointer hover:bg-slate-800 transition-colors"
-              onClick={() => {
-                // TODO: Open Calendar Modal here later
-                console.log("Open calendar")
-              }}
-            >
-              <CalendarIcon className="w-3 h-3 mr-2" />
-              {dateLabel}
-            </Badge>
+			<DateSelector 
+              date={selectedDate} 
+              setDate={(d) => d && setSelectedDate(d)} 
+            />
             
             <div className="h-6">
               {currentData?.hotspots.some(h => h.intensity === 'critical') && (
